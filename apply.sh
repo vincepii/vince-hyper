@@ -76,6 +76,7 @@ sync_back() {
     [[ -f "$HOME/.config/mimeapps.list" ]] && cp -a "$HOME/.config/mimeapps.list" "$REPO_DIR/config/"
 
     cp -a "$HOME/.local/bin/theme-switcher" \
+          "$HOME/.local/bin/wallpaper-switcher" \
           "$HOME/.local/bin/screenshot" \
           "$HOME/.local/bin/clipboard-menu" \
           "$HOME/.local/bin/power-menu" \
@@ -189,6 +190,7 @@ cp -a "$REPO_DIR/config/mimeapps.list" "$HOME/.config/mimeapps.list"
 echo "==> Installing utility scripts into ~/.local/bin..."
 cp -a "$REPO_DIR/bin/"* "$HOME/.local/bin/"
 chmod +x "$HOME/.local/bin/theme-switcher" \
+         "$HOME/.local/bin/wallpaper-switcher" \
          "$HOME/.local/bin/screenshot" \
          "$HOME/.local/bin/clipboard-menu" \
          "$HOME/.local/bin/power-menu" \

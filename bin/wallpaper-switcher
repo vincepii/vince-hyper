@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Wallpaper Switcher for Hyprpaper v0.8+
+# ==============================================================================
+# Usage:
+#   wallpaper-switcher                  # Open Rofi menu to pick a wallpaper
+#   wallpaper-switcher /path/to/img.jpg # Set specific wallpaper immediately
+#   wallpaper-switcher --theme          # Reset to the active theme's backdrop
+# ==============================================================================
+set -euo pipefail
+
+CUSTOM_STATE="$HOME/.config/themes/wallpaper"
+THEME_STATE="$HOME/.config/themes/current"
+mkdir -p "$HOME/.config/themes" "$HOME/Pictures/Wallpapers"
+
+apply_wallpaper() {
+    local wp="$1"
+    cat > "$HOME/.config/hypr/hyprpaper.conf" <<EOF
+wallpaper {
+    monitor = 
+    path = $wp
+    fit_mode = cover
+}
+splash = false
+EOF
+    if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]] || pgrep -x Hyprland >/dev/null 2>&1; then
+        pkill -x hyprpaper 2>/dev/null || true
+        nohup hyprpaper >/dev/null 2>&1 &
+        disown
+    fi
+}
+
+if [[ "${1:-}" == "--theme" ]]; then
+    rm -f "$CUSTOM_STATE"
+    CURRENT_THEME="$(cat "$THEME_STATE" 2>/dev/null || echo "Tokyo Night")"
+    "$HOME/.local/bin/theme-switcher" "$CURRENT_THEME"
+    exit 0
+fi
+
+if [[ -n "${1:-}" ]]; then
+    TARGET="$(realpath "$1")"
+    if [[ ! -f "$TARGET" ]]; then
+        echo "File not found: $1" >&2
+        exit 1
+    fi
+    echo "$TARGET" > "$CUSTOM_STATE"
+    apply_wallpaper "$TARGET"
+    command -v notify-send >/dev/null 2>&1 && notify-send -a "Wallpaper" -i "$TARGET" "Wallpaper Updated" "$(basename "$TARGET")" || true
+    exit 0
+fi
+
+# Build list of available wallpapers from ~/Pictures/Wallpapers, /usr/share/wallpapers, and theme backdrops
+declare -A MAP=()
+OPTIONS=("󰔎  Use Theme Default Backdrop")
+
+add_dir() {
+    local dir="$1"
+    local label="$2"
+    [[ -d "$dir" ]] || return 0
+    while IFS= read -r -d '' file; do
+        local base
+        base="$(basename "$file")"
+        # Skip anime/mascot wallpapers from CachyOS default folder
+        [[ "$base" =~ (Neko|Lady) ]] && continue
+        local key="$label / $base"
+        OPTIONS+=("$key")
+        MAP["$key"]="$file"
+    done < <(find "$dir" -maxdepth 2 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) -print0 | sort -z)
+}
+
+add_dir "$HOME/Pictures/Wallpapers" "Pictures"
+add_dir "/usr/share/wallpapers/cachyos-wallpapers" "System"
+add_dir "/usr/share/hypr" "Hypr"
+add_dir "$HOME/.local/share/wallpapers" "Theme"
+
+CHOICE=$(printf '%s\n' "${OPTIONS[@]}" | rofi -dmenu -i -p "󰸉 Wallpaper" -theme-str 'window {width: 560px;} listview {lines: 12;}') || exit 0
+[[ -z "$CHOICE" ]] && exit 0
+
+if [[ "$CHOICE" == "󰔎  Use Theme Default Backdrop" ]]; then
+    rm -f "$CUSTOM_STATE"
+    CURRENT_THEME="$(cat "$THEME_STATE" 2>/dev/null || echo "Tokyo Night")"
+    "$HOME/.local/bin/theme-switcher" "$CURRENT_THEME"
+    exit 0
+fi
+
+SELECTED_PATH="${MAP[$CHOICE]:-}"
+if [[ -n "$SELECTED_PATH" && -f "$SELECTED_PATH" ]]; then
+    echo "$SELECTED_PATH" > "$CUSTOM_STATE"
+    apply_wallpaper "$SELECTED_PATH"
+    command -v notify-send >/dev/null 2>&1 && notify-send -a "Wallpaper" -i "$SELECTED_PATH" "Wallpaper Updated" "$(basename "$SELECTED_PATH")" || true
+fi

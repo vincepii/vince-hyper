@@ -90,8 +90,9 @@
 
   "custom/theme": {
     "format": "󰔎",
-    "tooltip-format": "Switch Theme (Super+Shift+T)",
-    "on-click": "$HOME/.local/bin/theme-switcher"
+    "tooltip-format": "Left-click: Switch Theme (Super+Shift+T)\nRight-click: Switch Wallpaper (Super+Shift+W)",
+    "on-click": "$HOME/.local/bin/theme-switcher",
+    "on-click-right": "$HOME/.local/bin/wallpaper-switcher"
   },
 
   "pulseaudio": {

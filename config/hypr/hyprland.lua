@@ -40,6 +40,7 @@ local launcher    = "rofi -show drun"
 local windowMenu  = "rofi -show window"
 local clipMenu    = home .. "/.local/bin/clipboard-menu"
 local themeMenu   = home .. "/.local/bin/theme-switcher"
+local wallMenu    = home .. "/.local/bin/wallpaper-switcher"
 local powerMenu   = home .. "/.local/bin/power-menu"
 local keybindMenu = home .. "/.local/bin/keybinds-menu"
 local screenshot  = home .. "/.local/bin/screenshot"
@@ -271,9 +272,10 @@ hl.bind(mainMod .. " + SHIFT + grave", hl.dsp.window.move({ workspace = "special
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
--- 8. Utilities: Clipboard, Theme Switcher, Screenshots, Notifications, Power, Lock
+-- 8. Utilities: Clipboard, Theme Switcher, Wallpaper Switcher, Screenshots, Notifications, Power, Lock
 hl.bind(mainMod .. " + C",         hl.dsp.exec_cmd(clipMenu),    { description = "Clipboard Manager" })
 hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd(themeMenu),   { description = "Theme Selector" })
+hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd(wallMenu),    { description = "Wallpaper Selector" })
 hl.bind(mainMod .. " + N",         hl.dsp.exec_cmd("swaync-client -t -sw"), { description = "Notification Center" })
 hl.bind(mainMod .. " + Slash",     hl.dsp.exec_cmd(keybindMenu), { description = "Keybind Cheat Sheet" })
 hl.bind(mainMod .. " + SHIFT + Slash", hl.dsp.exec_cmd(keybindMenu), { description = "Keybind Cheat Sheet" })

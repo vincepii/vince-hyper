@@ -25,6 +25,7 @@ vince-hyper/
 ├── README.md                 # User & AI Agent architecture documentation
 ├── bin/                      # Installed to ~/.local/bin/
 │   ├── theme-switcher        # Rofi theme selector + multi-app palette generator
+│   ├── wallpaper-switcher    # Rofi wallpaper selector (Pictures/Wallpapers + System)
 │   ├── screenshot            # grim + slurp + wl-copy screenshot utility
 │   ├── clipboard-menu        # cliphist + rofi clipboard manager
 │   ├── power-menu            # rofi power menu (lock, suspend, logout, reboot, shutdown)
@@ -111,6 +112,7 @@ git diff
 | **`Super + Shift + C`** | Color Picker (`hyprpicker` -> Hex to Clipboard) |
 | **`Super + C`** | Clipboard History (`cliphist` + Rofi) |
 | **`Super + Shift + T`** | Theme Selector (`theme-switcher`) |
+| **`Super + Shift + W`** | Wallpaper Selector (`wallpaper-switcher` / Right-click `󰔎` in bar) |
 | **`Super + N`** | Toggle Notification Center (`swaync`) |
 | **`Super + Escape`** *(or `Super + X`)* | Power Menu (Lock, Suspend, Logout, Reboot, Shutdown) |
 | **`Super + Ctrl + L`** | Lock Screen Immediately (`hyprlock`) |

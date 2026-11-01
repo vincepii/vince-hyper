@@ -25,6 +25,7 @@ Super + Ctrl + S            │ Screenshot Fullscreen (Copy + Save)
 Super + P                   │ Screenshot Active Window
 Super + C                   │ Clipboard History (Rofi + cliphist)
 Super + Shift + T           │ Theme Selector (Dark & Light Themes)
+Super + Shift + W           │ Wallpaper Selector (Pictures & System Wallpapers)
 Super + N                   │ Toggle Notification Center (SwayNC)
 Super + Escape / Super + X  │ Power Menu (Lock, Suspend, Reboot, Shutdown)
 Super + Ctrl + L            │ Lock Screen Immediately (Hyprlock)

@@ -402,14 +402,20 @@ cat > "$HOME/.config/swaync/colors.css" <<EOF
 @define-color urgent $URGENT;
 EOF
 
-# 6. Hyprpaper Config (~/.config/hypr/hyprpaper.conf)
+# 6. Hyprpaper Config (~/.config/hypr/hyprpaper.conf) — uses Hyprpaper v0.8+ block syntax
+CUSTOM_WALLPAPER_STATE="$HOME/.config/themes/wallpaper"
 WALLPAPER="~/.local/share/wallpapers/${SLUG}.png"
-WALLPAPER_ABS="$WALLPAPER_DIR/${SLUG}.png"
+if [[ -f "$CUSTOM_WALLPAPER_STATE" ]]; then
+    CUSTOM_WP="$(cat "$CUSTOM_WALLPAPER_STATE")"
+    [[ -f "$CUSTOM_WP" ]] && WALLPAPER="$CUSTOM_WP"
+fi
 cat > "$HOME/.config/hypr/hyprpaper.conf" <<EOF
-preload = $WALLPAPER
-wallpaper = ,$WALLPAPER
+wallpaper {
+    monitor = 
+    path = $WALLPAPER
+    fit_mode = cover
+}
 splash = false
-ipc = on
 EOF
 
 # 7. Sync GTK / Desktop Dark vs Light preference
@@ -436,13 +442,9 @@ fi
 
 if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
     hyprctl reload >/dev/null 2>&1 || true
-    if pgrep -x hyprpaper >/dev/null 2>&1; then
-        hyprctl hyprpaper reload ",$WALLPAPER_ABS" >/dev/null 2>&1 || {
-            pkill -x hyprpaper || true
-            hyprpaper &
-            disown
-        }
-    fi
+    pkill -x hyprpaper 2>/dev/null || true
+    nohup hyprpaper >/dev/null 2>&1 &
+    disown
 fi
 
 if command -v notify-send >/dev/null 2>&1 && [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
