@@ -154,6 +154,11 @@ hl.config({
     },
 })
 
+-- Persistent workspaces 1..5 on DP-1 (so they are always visible & clickable in Waybar)
+for i = 1, 5 do
+    hl.workspace_rule({ workspace = tostring(i), monitor = "DP-1", persistent = true })
+end
+
 --------------------
 ---- ANIMATIONS ----
 --------------------
@@ -215,6 +220,7 @@ hl.bind("CTRL + SHIFT + Escape", hl.dsp.exec_cmd(terminal .. " -e btop"), { desc
 hl.bind(mainMod .. " + Q",           hl.dsp.window.close(), { description = "Close active window" })
 hl.bind(mainMod .. " + W",           hl.dsp.window.close(), { description = "Close active window" })
 hl.bind(mainMod .. " + SHIFT + Q",   hl.dsp.window.close(), { description = "Close active window" })
+hl.bind(mainMod .. " + SHIFT + Escape", hl.dsp.release_input_capture(), { dont_inhibit = true, description = "Force-release VM / Remote Desktop keyboard grab" })
 hl.bind(mainMod .. " + F",           hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }), { description = "Toggle Fullscreen" })
 hl.bind(mainMod .. " + M",           hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }),  { description = "Toggle Maximize" })
 hl.bind(mainMod .. " + SHIFT + Space", hl.dsp.window.float({ action = "toggle" }), { description = "Toggle Floating" })
