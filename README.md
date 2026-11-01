@@ -21,7 +21,7 @@ A clean aesthetic with a curated dark theme switcher, paired with classic **i3 /
 
 ```text
 vince-hyper/
-├── apply.sh                  # Bootstrap & sync script (apply, --packages, --sync-back)
+├── apply.sh                  # Bootstrap & sync script (apply / upgrade, --sync-back)
 ├── README.md                 # User & AI Agent architecture documentation
 ├── bin/                      # Installed to ~/.local/bin/
 │   ├── theme-switcher        # Rofi theme selector + multi-app palette generator
@@ -62,20 +62,20 @@ vince-hyper/
 
 ## Quick Start / Installation
 
-### 1. Apply Configurations (Existing System)
+### 1. Install or Update (Fresh or Existing System)
 ```bash
-git clone <your-repo-url> ~/src/vince-hyper
-cd ~/src/vince-hyper
+git clone git@github.com:vincepii/vince-hyper.git ~/src/vincepii/vince-hyper
+cd ~/src/vincepii/vince-hyper
 ./apply.sh
 ```
+`./apply.sh` automatically:
+1. Checks if any required packages are missing and installs only the missing ones via `pacman`.
+2. Backs up your existing `~/.config` directories to `~/.cache/vince-hyper-backup-<timestamp>`.
+3. Deploys all configurations and scripts, generates the gradient wallpapers, and **preserves your currently active theme** (defaulting to **Tokyo Night** only on a brand-new installation).
 
-### 2. Full Setup on a Fresh CachyOS / Arch Machine
-```bash
-./apply.sh --packages
-```
 *(Note: Google Chrome is launched via `flatpak run com.google.Chrome` by default. If you use native Chrome or another browser, update `local browser` in `config/hypr/hyprland.lua`.)*
 
-### 3. Saving Local Tweaks Back to the Repo
+### 2. Saving Local Tweaks Back to the Repo
 If you edit files directly in `~/.config/` or `~/.local/bin/` and want to commit them back to this repository:
 ```bash
 ./apply.sh --sync-back

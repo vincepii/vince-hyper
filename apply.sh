@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# vince-hyper: Apply / Bootstrap Script
+# vince-hyper: Apply / Bootstrap / Upgrade Script
 # ==============================================================================
 # Applies this repository's Hyprland desktop configuration to the current user's
-# environment (~/.config, ~/.local/bin, ~/.local/share/wallpapers).
+# environment (~/.config, ~/.local/bin, ~/.local/share/wallpapers) and ensures
+# all required packages are installed.
 #
 # Usage:
-#   ./apply.sh              # Copy configs & scripts, generate wallpapers, apply theme
-#   ./apply.sh --packages   # Also install required Arch/CachyOS packages via pacman
+#   ./apply.sh              # Install any missing packages, apply configs, keep current theme
 #   ./apply.sh --sync-back  # Pull live changes from ~/.config & ~/.local/bin into repo
 # ==============================================================================
 
@@ -55,30 +55,23 @@ sync_back() {
     cp -a "$HOME/.config/hypr/hyprland.lua" \
           "$HOME/.config/hypr/hyprlock.conf" \
           "$HOME/.config/hypr/hypridle.conf" \
-          "$HOME/.config/hypr/hyprpaper.conf" \
-          "$HOME/.config/hypr/theme.lua" \
           "$REPO_DIR/config/hypr/"
 
     cp -a "$HOME/.config/waybar/config.jsonc" \
           "$HOME/.config/waybar/style.css" \
-          "$HOME/.config/waybar/colors.css" \
           "$REPO_DIR/config/waybar/"
 
     cp -a "$HOME/.config/rofi/config.rasi" \
           "$HOME/.config/rofi/theme.rasi" \
-          "$HOME/.config/rofi/colors.rasi" \
           "$REPO_DIR/config/rofi/"
 
     cp -a "$HOME/.config/kitty/kitty.conf" \
-          "$HOME/.config/kitty/colors.conf" \
           "$REPO_DIR/config/kitty/"
 
     cp -a "$HOME/.config/swaync/config.json" \
           "$HOME/.config/swaync/style.css" \
-          "$HOME/.config/swaync/colors.css" \
           "$REPO_DIR/config/swaync/"
 
-    [[ -f "$HOME/.config/themes/current" ]] && cp -a "$HOME/.config/themes/current" "$REPO_DIR/config/themes/"
     [[ -f "$HOME/.config/uwsm/env" ]] && cp -a "$HOME/.config/uwsm/env" "$REPO_DIR/config/uwsm/"
     [[ -f "$HOME/.config/mimeapps.list" ]] && cp -a "$HOME/.config/mimeapps.list" "$REPO_DIR/config/"
 
@@ -93,12 +86,14 @@ sync_back() {
 }
 
 generate_wallpapers() {
-    echo "==> Generating minimal dark gradient wallpapers in ~/.local/share/wallpapers..."
+    echo "==> Ensuring minimal gradient wallpapers exist in ~/.local/share/wallpapers..."
     mkdir -p "$HOME/.local/share/wallpapers"
     python3 - << 'PYEOF'
 import os, struct, zlib
 
 def make_png(path, w, h, top_rgb, bot_rgb):
+    if os.path.exists(path):
+        return
     raw = bytearray()
     for y in range(h):
         t = y / max(1, h - 1)
@@ -137,12 +132,28 @@ if [[ "${1:-}" == "--sync-back" ]]; then
     exit 0
 fi
 
-if [[ "${1:-}" == "--packages" ]]; then
-    echo "==> Installing required packages via pacman..."
-    sudo pacman -S --needed "${REQUIRED_PKGS[@]}"
+# 1. Check for any missing packages and install them automatically
+MISSING_PKGS=()
+for pkg in "${REQUIRED_PKGS[@]}"; do
+    if ! pacman -Qq "$pkg" >/dev/null 2>&1; then
+        MISSING_PKGS+=("$pkg")
+    fi
+done
+
+if [[ ${#MISSING_PKGS[@]} -gt 0 ]]; then
+    echo "==> Installing missing packages: ${MISSING_PKGS[*]}"
+    sudo pacman -S --needed "${MISSING_PKGS[@]}"
+else
+    echo "==> All required packages are already installed."
 fi
 
-# 1. Backup existing configs if present
+# 2. Remember user's currently active theme before touching ~/.config
+CURRENT_THEME=""
+if [[ -f "$HOME/.config/themes/current" ]]; then
+    CURRENT_THEME="$(cat "$HOME/.config/themes/current")"
+fi
+
+# 3. Backup existing configs if present
 TIMESTAMP="$(date +'%Y%m%d-%H%M%S')"
 BACKUP_DIR="$HOME/.cache/vince-hyper-backup-$TIMESTAMP"
 mkdir -p "$BACKUP_DIR"
@@ -153,7 +164,7 @@ for dir in hypr waybar rofi kitty swaync themes uwsm; do
 done
 echo "==> Previous configs backed up to: $BACKUP_DIR"
 
-# 2. Create target directories
+# 4. Create target directories
 mkdir -p "$HOME/.config/hypr" \
          "$HOME/.config/waybar" \
          "$HOME/.config/rofi" \
@@ -165,14 +176,13 @@ mkdir -p "$HOME/.config/hypr" \
          "$HOME/.local/share/wallpapers" \
          "$HOME/Pictures/Screenshots"
 
-# 3. Copy configs & helper scripts
+# 5. Copy configs & helper scripts
 echo "==> Installing configurations into ~/.config..."
 cp -a "$REPO_DIR/config/hypr/"*   "$HOME/.config/hypr/"
 cp -a "$REPO_DIR/config/waybar/"* "$HOME/.config/waybar/"
 cp -a "$REPO_DIR/config/rofi/"*   "$HOME/.config/rofi/"
 cp -a "$REPO_DIR/config/kitty/"*  "$HOME/.config/kitty/"
 cp -a "$REPO_DIR/config/swaync/"* "$HOME/.config/swaync/"
-cp -a "$REPO_DIR/config/themes/"* "$HOME/.config/themes/"
 cp -a "$REPO_DIR/config/uwsm/"*   "$HOME/.config/uwsm/"
 cp -a "$REPO_DIR/config/mimeapps.list" "$HOME/.config/mimeapps.list"
 
@@ -184,7 +194,7 @@ chmod +x "$HOME/.local/bin/theme-switcher" \
          "$HOME/.local/bin/power-menu" \
          "$HOME/.local/bin/keybinds-menu"
 
-# 4. Ensure ~/.local/bin is in shell PATHs
+# 6. Ensure ~/.local/bin is in shell PATHs
 for rc in "$HOME/.bashrc" "$HOME/.zshrc"; do
     if [[ -f "$rc" ]] && ! grep -q '\.local/bin' "$rc"; then
         sed -i '1i export PATH="$HOME/.local/bin:$PATH"' "$rc"
@@ -194,7 +204,7 @@ if [[ -f "$HOME/.config/fish/config.fish" ]] && ! grep -q '\.local/bin' "$HOME/.
     sed -i '1i fish_add_path -g $HOME/.local/bin' "$HOME/.config/fish/config.fish"
 fi
 
-# 5. Optional non-intrusive SSH Agent socket setup (only if openssh + systemd user socket exist)
+# 7. Optional non-intrusive SSH Agent socket setup (only if openssh + systemd user socket exist)
 if systemctl --user list-unit-files ssh-agent.socket >/dev/null 2>&1; then
     systemctl --user enable --now ssh-agent.socket >/dev/null 2>&1 || true
     if [[ -f "$HOME/.config/fish/config.fish" ]] && ! grep -q 'SSH_AUTH_SOCK' "$HOME/.config/fish/config.fish"; then
@@ -208,9 +218,11 @@ FISHEOF
     fi
 fi
 
-# 6. Generate wallpapers & apply theme
+# 8. Generate wallpapers & re-apply user's active theme (or Tokyo Night on first install)
 generate_wallpapers
-CURRENT_THEME="$(cat "$HOME/.config/themes/current" 2>/dev/null || echo "Tokyo Night")"
+if [[ -z "$CURRENT_THEME" ]]; then
+    CURRENT_THEME="Tokyo Night"
+fi
 "$HOME/.local/bin/theme-switcher" "$CURRENT_THEME"
 
-echo "==> Successfully applied vince-hyper ($CURRENT_THEME)!"
+echo "==> Successfully applied vince-hyper (Theme: $CURRENT_THEME)!"
