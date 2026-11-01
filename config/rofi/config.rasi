@@ -13,6 +13,7 @@ configuration {
     kb-accept-entry:            "Return,KP_Enter";
     kb-row-up:                  "Up,Control+k,Control+p";
     kb-row-down:                "Down,Control+j,Control+n";
+    kb-cancel:                  "Escape,Super+c,Super+d,Super+space,Super+Escape,Super+x,Super+slash,Super+question,Super+T,Super+W";
 }
 
 @theme "~/.config/rofi/theme.rasi"

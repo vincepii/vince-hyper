@@ -26,6 +26,9 @@ select_theme() {
 
 CHOICE="${1:-}"
 if [[ -z "$CHOICE" ]]; then
+    if pkill -x rofi 2>/dev/null; then
+        exit 0
+    fi
     CHOICE=$(select_theme || true)
 fi
 

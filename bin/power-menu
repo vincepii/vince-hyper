@@ -8,6 +8,10 @@ SUSPEND="󰤄  Suspend"
 REBOOT="󰜉  Reboot"
 SHUTDOWN="󰐥  Shutdown"
 
+if pkill -x rofi 2>/dev/null; then
+    exit 0
+fi
+
 CHOICE=$(printf '%s\n%s\n%s\n%s\n%s\n' "$LOCK" "$SUSPEND" "$LOGOUT" "$REBOOT" "$SHUTDOWN" \
     | rofi -dmenu -i -p "󰐥 Power" -theme-str 'window {width: 280px;} listview {lines: 5;}') || exit 0
 

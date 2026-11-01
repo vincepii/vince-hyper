@@ -204,10 +204,10 @@ hl.gesture({
 local mainMod = "SUPER"
 
 -- 1. Launcher: Tap Super alone (on release) OR Super + Space / Super + D
-hl.bind("SUPER + SUPER_L",   hl.dsp.exec_cmd("pkill rofi || " .. launcher), { release = true, description = "Toggle App Launcher on Super tap" })
-hl.bind(mainMod .. " + D",     hl.dsp.exec_cmd("pkill rofi || " .. launcher), { description = "App Launcher" })
-hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd("pkill rofi || " .. launcher), { description = "App Launcher" })
-hl.bind(mainMod .. " + Tab",   hl.dsp.exec_cmd("pkill rofi || " .. windowMenu), { description = "Window Switcher" })
+hl.bind("SUPER + SUPER_L",   hl.dsp.exec_cmd("pkill -x rofi || " .. launcher), { release = true, description = "Toggle App Launcher on Super tap" })
+hl.bind(mainMod .. " + D",     hl.dsp.exec_cmd("pkill -x rofi || " .. launcher), { non_consuming = false, description = "App Launcher" })
+hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd("pkill -x rofi || " .. launcher), { description = "App Launcher" })
+hl.bind(mainMod .. " + Tab",   hl.dsp.exec_cmd("pkill -x rofi || " .. windowMenu), { description = "Window Switcher" })
 hl.bind("ALT + Tab",           hl.dsp.window.cycle_next(), { description = "Cycle next window" })
 
 -- 2. Core Applications

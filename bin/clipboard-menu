@@ -8,6 +8,11 @@ if [[ "${1:-}" == "--clear" ]]; then
     exit 0
 fi
 
+# Toggle: if rofi is already open, close it and exit
+if pkill -x rofi 2>/dev/null; then
+    exit 0
+fi
+
 SELECTION=$(cliphist list | rofi -dmenu -i -p "󰅌 Clipboard" -display-columns 2) || exit 0
 [[ -z "$SELECTION" ]] && exit 0
 

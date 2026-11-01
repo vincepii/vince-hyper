@@ -2,6 +2,10 @@
 # Searchable Keybind Cheat Sheet in Rofi
 set -euo pipefail
 
+if pkill -x rofi 2>/dev/null; then
+    exit 0
+fi
+
 cat << 'EOF' | rofi -dmenu -i -p "󰌌 Keybinds" -theme-str 'window {width: 680px;} listview {lines: 16;}'
 Super (Tap) / Super + D     │ App Launcher (Rofi)
 Super + Return              │ Terminal (Kitty)

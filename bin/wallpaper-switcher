@@ -73,6 +73,10 @@ add_dir "/usr/share/wallpapers/cachyos-wallpapers" "System"
 add_dir "/usr/share/hypr" "Hypr"
 add_dir "$HOME/.local/share/wallpapers" "Theme"
 
+if pkill -x rofi 2>/dev/null; then
+    exit 0
+fi
+
 CHOICE=$(printf '%s\n' "${OPTIONS[@]}" | rofi -dmenu -i -p "󰸉 Wallpaper" -theme-str 'window {width: 560px;} listview {lines: 12;}') || exit 0
 [[ -z "$CHOICE" ]] && exit 0
 
