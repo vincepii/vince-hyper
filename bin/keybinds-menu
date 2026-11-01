@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Searchable Keybind Cheat Sheet in Rofi
+set -euo pipefail
+
+cat << 'EOF' | rofi -dmenu -i -p "󰌌 Keybinds" -theme-str 'window {width: 680px;} listview {lines: 16;}'
+Super (Tap) / Super + D     │ App Launcher (Rofi)
+Super + Return              │ Terminal (Kitty)
+Super + B                   │ Browser (Google Chrome)
+Super + E                   │ File Manager (Nautilus)
+Super + H / J / K / L       │ Focus Left / Down / Up / Right
+Super + Shift + H / J / K / L│ Move Window Left / Down / Up / Right
+Super + Ctrl + H / J / K / L│ Resize Window Left / Down / Up / Right
+Super + V / Super + \       │ Toggle Split Direction (Dwindle)
+Super + F                   │ Toggle Fullscreen
+Super + M                   │ Toggle Maximize (Keep Bar)
+Super + Shift + Space       │ Toggle Floating Window
+Super + Q / Super + W       │ Close Active Window
+Super + 1..0                │ Switch to Workspace 1..10
+Super + Shift + 1..0        │ Move Window to Workspace 1..10
+Super + S                   │ Toggle Scratchpad Workspace
+Super + Shift + S           │ Send Window to Scratchpad
+Print / Super + P           │ Screenshot Region (Copy + Save)
+Shift + Print               │ Screenshot Fullscreen (Copy + Save)
+Alt + Print                 │ Screenshot Active Window
+Super + C                   │ Clipboard History (Rofi + cliphist)
+Super + Shift + T           │ Theme Selector (Tokyo Night, Catppuccin, etc.)
+Super + N                   │ Toggle Notification Center (SwayNC)
+Super + Escape / Super + X  │ Power Menu (Lock, Suspend, Reboot, Shutdown)
+Super + Ctrl + L            │ Lock Screen Immediately (Hyprlock)
+CapsLock                    │ Toggle US / IT Keyboard Layout
+EOF

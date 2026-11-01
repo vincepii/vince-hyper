@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Clean Rofi Power Menu
+set -euo pipefail
+
+LOCK="󰌾  Lock"
+LOGOUT="󰍃  Logout"
+SUSPEND="󰤄  Suspend"
+REBOOT="󰜉  Reboot"
+SHUTDOWN="󰐥  Shutdown"
+
+CHOICE=$(printf '%s\n%s\n%s\n%s\n%s\n' "$LOCK" "$SUSPEND" "$LOGOUT" "$REBOOT" "$SHUTDOWN" \
+    | rofi -dmenu -i -p "󰐥 Power" -theme-str 'window {width: 280px;} listview {lines: 5;}') || exit 0
+
+case "$CHOICE" in
+    "$LOCK")
+        pidof hyprlock >/dev/null || hyprlock
+        ;;
+    "$SUSPEND")
+        systemctl suspend
+        ;;
+    "$LOGOUT")
+        if command -v hyprshutdown >/dev/null 2>&1; then
+            hyprshutdown
+        else
+            hyprctl dispatch exit
+        fi
+        ;;
+    "$REBOOT")
+        systemctl reboot
+        ;;
+    "$SHUTDOWN")
+        systemctl poweroff
+        ;;
+esac

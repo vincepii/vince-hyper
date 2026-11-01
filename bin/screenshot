@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Screenshot helper using grim + slurp + wl-copy + notify-send
+set -euo pipefail
+
+DIR="$HOME/Pictures/Screenshots"
+mkdir -p "$DIR"
+FILE="$DIR/screenshot-$(date +'%Y%m%d-%H%M%S').png"
+
+MODE="${1:-region}"
+
+case "$MODE" in
+    region)
+        GEOM=$(slurp 2>/dev/null) || exit 0
+        [[ -z "$GEOM" ]] && exit 0
+        grim -g "$GEOM" "$FILE"
+        ;;
+    full)
+        grim "$FILE"
+        ;;
+    window)
+        if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
+            GEOM=$(hyprctl activewindow -j | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')
+            grim -g "$GEOM" "$FILE"
+        else
+            grim "$FILE"
+        fi
+        ;;
+    *)
+        echo "Usage: screenshot [region|full|window]" >&2
+        exit 1
+        ;;
+esac
+
+wl-copy < "$FILE"
+notify-send -a "Screenshot" -i "$FILE" "Screenshot Captured" "Copied to clipboard & saved to:\n$(basename "$FILE")"

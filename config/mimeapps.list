@@ -1,0 +1,16 @@
+[Added Associations]
+x-scheme-handler/antigravity=antigravity.desktop;
+application/xhtml+xml=com.google.Chrome.desktop;
+text/html=com.google.Chrome.desktop;
+x-scheme-handler/http=com.google.Chrome.desktop;
+x-scheme-handler/https=com.google.Chrome.desktop;
+inode/directory=org.gnome.Nautilus.desktop;
+
+[Default Applications]
+inode/directory=org.gnome.Nautilus.desktop
+text/plain=org.gnome.TextEditor.desktop
+x-scheme-handler/http=com.google.Chrome.desktop
+x-scheme-handler/https=com.google.Chrome.desktop
+x-scheme-handler/antigravity=antigravity.desktop
+application/xhtml+xml=com.google.Chrome.desktop
+text/html=com.google.Chrome.desktop

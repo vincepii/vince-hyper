@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Clipboard manager via cliphist + rofi + wl-copy
+set -euo pipefail
+
+if [[ "${1:-}" == "--clear" ]]; then
+    cliphist wipe
+    notify-send -a "Clipboard" "Clipboard History Cleared"
+    exit 0
+fi
+
+SELECTION=$(cliphist list | rofi -dmenu -i -p "󰅌 Clipboard" -display-columns 2) || exit 0
+[[ -z "$SELECTION" ]] && exit 0
+
+printf '%s' "$SELECTION" | cliphist decode | wl-copy

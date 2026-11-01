@@ -1,0 +1,184 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 34,
+  "spacing": 4,
+  "margin-top": 0,
+  "margin-left": 0,
+  "margin-right": 0,
+
+  "modules-left": [
+    "hyprland/workspaces",
+    "hyprland/submap",
+    "hyprland/window"
+  ],
+
+  "modules-center": [
+    "clock"
+  ],
+
+  "modules-right": [
+    "tray",
+    "hyprland/language",
+    "custom/clipboard",
+    "custom/theme",
+    "pulseaudio",
+    "network",
+    "bluetooth",
+    "cpu",
+    "memory",
+    "battery",
+    "custom/notification",
+    "custom/power"
+  ],
+
+  "hyprland/workspaces": {
+    "disable-scroll": false,
+    "all-outputs": true,
+    "format": "{name}",
+    "persistent-workspaces": {
+      "*": 5
+    }
+  },
+
+  "hyprland/submap": {
+    "format": "󰌌 {}",
+    "tooltip": false
+  },
+
+  "hyprland/window": {
+    "max-length": 55,
+    "separate-outputs": true,
+    "rewrite": {
+      "(.*) — Google Chrome": "  $1",
+      "(.*) - Mozilla Firefox": "  $1",
+      ".*@.*:(.*)": "  $1"
+    }
+  },
+
+  "clock": {
+    "format": "󰥔 {:%a %d %b  %H:%M}",
+    "format-alt": "󰃭 {:%Y-%m-%d  %H:%M:%S}",
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "mode": "month",
+      "weeks-pos": "right",
+      "on-scroll": 1,
+      "format": {
+        "months": "<span color='#c0caf5'><b>{}</b></span>",
+        "days": "<span color='#a9b1d6'>{}</span>",
+        "weeks": "<span color='#565f89'><b>W{}</b></span>",
+        "weekdays": "<span color='#7aa2f7'><b>{}</b></span>",
+        "today": "<span color='#f7768e'><b><u>{}</u></b></span>"
+      }
+    }
+  },
+
+  "hyprland/language": {
+    "format": "󰌌 {}",
+    "format-en": "US",
+    "format-it": "IT",
+    "on-click": "hyprctl switchxkblayout all next"
+  },
+
+  "custom/clipboard": {
+    "format": "󰅌",
+    "tooltip-format": "Clipboard History (Super+C)\nRight-click to wipe",
+    "on-click": "$HOME/.local/bin/clipboard-menu",
+    "on-click-right": "$HOME/.local/bin/clipboard-menu --clear"
+  },
+
+  "custom/theme": {
+    "format": "󰔎",
+    "tooltip-format": "Switch Theme (Super+Shift+T)",
+    "on-click": "$HOME/.local/bin/theme-switcher"
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-bluetooth": "󰂰 {volume}%",
+    "format-muted": "󰝟 Muted",
+    "format-icons": {
+      "headphone": "󰋋",
+      "default": ["󰕿", "󰖀", "󰕾"]
+    },
+    "scroll-step": 5,
+    "on-click": "pavucontrol",
+    "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+  },
+
+  "network": {
+    "format-wifi": "󰤨 {essid}",
+    "format-ethernet": "󰈀 Wired",
+    "format-disconnected": "󰤭 Offline",
+    "tooltip-format": "{ifname} via {gwaddr}\nIP: {ipaddr}/{cidr}\nDown: {bandwidthDownBits} | Up: {bandwidthUpBits}",
+    "on-click": "nm-connection-editor"
+  },
+
+  "bluetooth": {
+    "format": "󰂯",
+    "format-disabled": "󰂲",
+    "format-off": "󰂲",
+    "format-connected": "󰂱 {num_connections}",
+    "tooltip-format": "{controller_alias}\t{controller_address}",
+    "tooltip-format-connected": "{controller_alias}\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "on-click": "blueman-manager"
+  },
+
+  "cpu": {
+    "interval": 3,
+    "format": "󰍛 {usage}%",
+    "on-click": "kitty -e btop"
+  },
+
+  "memory": {
+    "interval": 5,
+    "format": "󰘚 {percentage}%",
+    "tooltip-format": "{used:0.1f}GiB / {total:0.1f}GiB used",
+    "on-click": "kitty -e btop"
+  },
+
+  "battery": {
+    "states": {
+      "warning": 30,
+      "critical": 15
+    },
+    "format": "{icon} {capacity}%",
+    "format-charging": "󰂄 {capacity}%",
+    "format-plugged": "󰚥 {capacity}%",
+    "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+  },
+
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8
+  },
+
+  "custom/notification": {
+    "tooltip": false,
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "󰂚",
+      "none": "󰂜",
+      "dnd-notification": "󰂛",
+      "dnd-none": "󰪑",
+      "inhibited-notification": "󰂚",
+      "inhibited-none": "󰂜",
+      "dnd-inhibited-notification": "󰂛",
+      "dnd-inhibited-none": "󰪑"
+    },
+    "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "escape": true
+  },
+
+  "custom/power": {
+    "format": "󰐥",
+    "tooltip-format": "Power Menu (Super+Escape)",
+    "on-click": "$HOME/.local/bin/power-menu"
+  }
+}

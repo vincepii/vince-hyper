@@ -1,0 +1,10 @@
+export BROWSER="flatpak run com.google.Chrome"
+export TERM="xterm-kitty"
+export PATH="$HOME/.local/bin:$PATH"
+export QT_QPA_PLATFORM="wayland;xcb"
+export QT_QPA_PLATFORMTHEME="qt6ct"
+export ELECTRON_OZONE_PLATFORM_HINT="auto"
+export HYPRCURSOR_THEME="Bibata-Modern-Ice"
+export HYPRCURSOR_SIZE=24
+export XCURSOR_THEME="Bibata-Modern-Ice"
+export XCURSOR_SIZE=24

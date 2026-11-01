@@ -1,0 +1,450 @@
+#!/usr/bin/env bash
+# Unified Theme Switcher for Hyprland, Waybar, Rofi, Kitty, SwayNC, Hyprpaper, GTK
+set -euo pipefail
+
+THEME_STATE="$HOME/.config/themes/current"
+WALLPAPER_DIR="$HOME/.local/share/wallpapers"
+
+THEMES=(
+    "Tokyo Night"
+    "Catppuccin Mocha"
+    "Gruvbox Dark"
+    "Nord"
+    "Rose Pine"
+    "Everforest"
+    "Catppuccin Latte (Light)"
+    "Gruvbox Light"
+    "Rose Pine Dawn (Light)"
+    "Solarized Light"
+)
+
+select_theme() {
+    local current=""
+    [[ -f "$THEME_STATE" ]] && current=$(cat "$THEME_STATE")
+    printf '%s\n' "${THEMES[@]}" | rofi -dmenu -i -p "󰔎 Theme ($current)" -theme-str 'listview {lines: 10;}'
+}
+
+CHOICE="${1:-}"
+if [[ -z "$CHOICE" ]]; then
+    CHOICE=$(select_theme || true)
+fi
+
+[[ -z "$CHOICE" ]] && exit 0
+
+case "$CHOICE" in
+    "Tokyo Night"|tokyo-night)
+        NAME="Tokyo Night"
+        SLUG="tokyo-night"
+        IS_LIGHT=0
+        BG="#1a1b26"
+        BG_ALT="#24283b"
+        SURFACE="#292e42"
+        FG="#c0caf5"
+        FG_DIM="#565f89"
+        ACCENT="#7aa2f7"
+        ACCENT2="#bb9af7"
+        URGENT="#f7768e"
+        GREEN="#9ece6a"
+        YELLOW="#e0af68"
+        CYAN="#7dcfff"
+        HYPR_ACTIVE="rgba(7aa2f7ee)"
+        HYPR_ACTIVE2="rgba(bb9af7ee)"
+        HYPR_INACTIVE="rgba(292e42aa)"
+        C0="#15161e"; C8="#414868"
+        C1="#f7768e"; C9="#f7768e"
+        C2="#9ece6a"; C10="#9ece6a"
+        C3="#e0af68"; C11="#e0af68"
+        C4="#7aa2f7"; C12="#7aa2f7"
+        C5="#bb9af7"; C13="#bb9af7"
+        C6="#7dcfff"; C14="#7dcfff"
+        C7="#a9b1d6"; C15="#c0caf5"
+        ;;
+    "Catppuccin Mocha"|catppuccin-mocha)
+        NAME="Catppuccin Mocha"
+        SLUG="catppuccin-mocha"
+        IS_LIGHT=0
+        BG="#1e1e2e"
+        BG_ALT="#181825"
+        SURFACE="#313244"
+        FG="#cdd6f4"
+        FG_DIM="#6c7086"
+        ACCENT="#89b4fa"
+        ACCENT2="#cba6f7"
+        URGENT="#f38ba8"
+        GREEN="#a6e3a1"
+        YELLOW="#f9e2af"
+        CYAN="#89dceb"
+        HYPR_ACTIVE="rgba(89b4faee)"
+        HYPR_ACTIVE2="rgba(cba6f7ee)"
+        HYPR_INACTIVE="rgba(313244aa)"
+        C0="#45475a"; C8="#585b70"
+        C1="#f38ba8"; C9="#f38ba8"
+        C2="#a6e3a1"; C10="#a6e3a1"
+        C3="#f9e2af"; C11="#f9e2af"
+        C4="#89b4fa"; C12="#89b4fa"
+        C5="#f5c2e7"; C13="#f5c2e7"
+        C6="#94e2d5"; C14="#94e2d5"
+        C7="#bac2de"; C15="#a6adc8"
+        ;;
+    "Gruvbox Dark"|gruvbox-dark)
+        NAME="Gruvbox Dark"
+        SLUG="gruvbox-dark"
+        IS_LIGHT=0
+        BG="#282828"
+        BG_ALT="#1d2021"
+        SURFACE="#3c3836"
+        FG="#ebdbb2"
+        FG_DIM="#928374"
+        ACCENT="#d79921"
+        ACCENT2="#83a598"
+        URGENT="#fb4934"
+        GREEN="#b8bb26"
+        YELLOW="#fabd2f"
+        CYAN="#8ec07c"
+        HYPR_ACTIVE="rgba(d79921ee)"
+        HYPR_ACTIVE2="rgba(fabd2fee)"
+        HYPR_INACTIVE="rgba(3c3836aa)"
+        C0="#282828"; C8="#928374"
+        C1="#cc241d"; C9="#fb4934"
+        C2="#98971a"; C10="#b8bb26"
+        C3="#d79921"; C11="#fabd2f"
+        C4="#458588"; C12="#83a598"
+        C5="#b16286"; C13="#d3869b"
+        C6="#689d6a"; C14="#8ec07c"
+        C7="#a89984"; C15="#ebdbb2"
+        ;;
+    "Nord"|nord)
+        NAME="Nord"
+        SLUG="nord"
+        IS_LIGHT=0
+        BG="#2e3440"
+        BG_ALT="#242933"
+        SURFACE="#3b4252"
+        FG="#eceff4"
+        FG_DIM="#616e88"
+        ACCENT="#88c0d0"
+        ACCENT2="#81a1c1"
+        URGENT="#bf616a"
+        GREEN="#a3be8c"
+        YELLOW="#ebcb8b"
+        CYAN="#8fbcbb"
+        HYPR_ACTIVE="rgba(88c0d0ee)"
+        HYPR_ACTIVE2="rgba(81a1c1ee)"
+        HYPR_INACTIVE="rgba(3b4252aa)"
+        C0="#3b4252"; C8="#4c566a"
+        C1="#bf616a"; C9="#bf616a"
+        C2="#a3be8c"; C10="#a3be8c"
+        C3="#ebcb8b"; C11="#ebcb8b"
+        C4="#81a1c1"; C12="#81a1c1"
+        C5="#b48ead"; C13="#b48ead"
+        C6="#88c0d0"; C14="#8fbcbb"
+        C7="#e5e9f0"; C15="#eceff4"
+        ;;
+    "Rose Pine"|rose-pine)
+        NAME="Rose Pine"
+        SLUG="rose-pine"
+        IS_LIGHT=0
+        BG="#191724"
+        BG_ALT="#1f1d2e"
+        SURFACE="#26233a"
+        FG="#e0def4"
+        FG_DIM="#6e6a86"
+        ACCENT="#c4a7e7"
+        ACCENT2="#ebbcba"
+        URGENT="#eb6f92"
+        GREEN="#31748f"
+        YELLOW="#f6c177"
+        CYAN="#9ccfd8"
+        HYPR_ACTIVE="rgba(c4a7e7ee)"
+        HYPR_ACTIVE2="rgba(ebbcbaee)"
+        HYPR_INACTIVE="rgba(26233aaa)"
+        C0="#26233a"; C8="#6e6a86"
+        C1="#eb6f92"; C9="#eb6f92"
+        C2="#31748f"; C10="#31748f"
+        C3="#f6c177"; C11="#f6c177"
+        C4="#9ccfd8"; C12="#9ccfd8"
+        C5="#c4a7e7"; C13="#c4a7e7"
+        C6="#ebbcba"; C14="#ebbcba"
+        C7="#e0def4"; C15="#e0def4"
+        ;;
+    "Everforest"|everforest)
+        NAME="Everforest"
+        SLUG="everforest"
+        IS_LIGHT=0
+        BG="#2d353b"
+        BG_ALT="#232a2e"
+        SURFACE="#3d484d"
+        FG="#d3c6aa"
+        FG_DIM="#859289"
+        ACCENT="#a7c080"
+        ACCENT2="#7fbbb3"
+        URGENT="#e67e80"
+        GREEN="#a7c080"
+        YELLOW="#dbbc7f"
+        CYAN="#83c092"
+        HYPR_ACTIVE="rgba(a7c080ee)"
+        HYPR_ACTIVE2="rgba(7fbbb3ee)"
+        HYPR_INACTIVE="rgba(3d484daa)"
+        C0="#343f44"; C8="#859289"
+        C1="#e67e80"; C9="#e67e80"
+        C2="#a7c080"; C10="#a7c080"
+        C3="#dbbc7f"; C11="#dbbc7f"
+        C4="#7fbbb3"; C12="#7fbbb3"
+        C5="#d699b6"; C13="#d699b6"
+        C6="#83c092"; C14="#83c092"
+        C7="#d3c6aa"; C15="#d3c6aa"
+        ;;
+    "Catppuccin Latte (Light)"|"Catppuccin Latte"|catppuccin-latte)
+        NAME="Catppuccin Latte (Light)"
+        SLUG="catppuccin-latte"
+        IS_LIGHT=1
+        BG="#eff1f5"
+        BG_ALT="#e6e9ef"
+        SURFACE="#ccd0da"
+        FG="#4c4f69"
+        FG_DIM="#8c8fa1"
+        ACCENT="#1e66f5"
+        ACCENT2="#8839ef"
+        URGENT="#d20f39"
+        GREEN="#40a02b"
+        YELLOW="#df8e1d"
+        CYAN="#04a5e5"
+        HYPR_ACTIVE="rgba(1e66f5ee)"
+        HYPR_ACTIVE2="rgba(8839efee)"
+        HYPR_INACTIVE="rgba(ccd0daaa)"
+        C0="#5c5f77"; C8="#6c6f85"
+        C1="#d20f39"; C9="#d20f39"
+        C2="#40a02b"; C10="#40a02b"
+        C3="#df8e1d"; C11="#df8e1d"
+        C4="#1e66f5"; C12="#1e66f5"
+        C5="#ea76cb"; C13="#ea76cb"
+        C6="#179299"; C14="#179299"
+        C7="#acb0be"; C15="#bcc0cc"
+        ;;
+    "Gruvbox Light"|gruvbox-light)
+        NAME="Gruvbox Light"
+        SLUG="gruvbox-light"
+        IS_LIGHT=1
+        BG="#fbf1c7"
+        BG_ALT="#f2e5bc"
+        SURFACE="#ebdbb2"
+        FG="#3c3836"
+        FG_DIM="#7c6f64"
+        ACCENT="#b57614"
+        ACCENT2="#076678"
+        URGENT="#9d0006"
+        GREEN="#79740e"
+        YELLOW="#b57614"
+        CYAN="#427b58"
+        HYPR_ACTIVE="rgba(b57614ee)"
+        HYPR_ACTIVE2="rgba(076678ee)"
+        HYPR_INACTIVE="rgba(d5c4a1aa)"
+        C0="#fbf1c7"; C8="#928374"
+        C1="#cc241d"; C9="#9d0006"
+        C2="#98971a"; C10="#79740e"
+        C3="#d79921"; C11="#b57614"
+        C4="#458588"; C12="#076678"
+        C5="#b16286"; C13="#8f3f71"
+        C6="#689d6a"; C14="#427b58"
+        C7="#7c6f64"; C15="#3c3836"
+        ;;
+    "Rose Pine Dawn (Light)"|"Rose Pine Dawn"|rose-pine-dawn)
+        NAME="Rose Pine Dawn (Light)"
+        SLUG="rose-pine-dawn"
+        IS_LIGHT=1
+        BG="#faf4ed"
+        BG_ALT="#fffaf3"
+        SURFACE="#f2e9e1"
+        FG="#575279"
+        FG_DIM="#9893a5"
+        ACCENT="#907aa9"
+        ACCENT2="#d7827e"
+        URGENT="#b4637a"
+        GREEN="#286983"
+        YELLOW="#ea9d34"
+        CYAN="#56949f"
+        HYPR_ACTIVE="rgba(907aa9ee)"
+        HYPR_ACTIVE2="rgba(d7827eee)"
+        HYPR_INACTIVE="rgba(dfdad9aa)"
+        C0="#f2e9e1"; C8="#9893a5"
+        C1="#b4637a"; C9="#b4637a"
+        C2="#286983"; C10="#286983"
+        C3="#ea9d34"; C11="#ea9d34"
+        C4="#56949f"; C12="#56949f"
+        C5="#907aa9"; C13="#907aa9"
+        C6="#d7827e"; C14="#d7827e"
+        C7="#575279"; C15="#575279"
+        ;;
+    "Solarized Light"|solarized-light)
+        NAME="Solarized Light"
+        SLUG="solarized-light"
+        IS_LIGHT=1
+        BG="#fdf6e3"
+        BG_ALT="#eee8d5"
+        SURFACE="#e4decb"
+        FG="#586e75"
+        FG_DIM="#93a1a1"
+        ACCENT="#268bd2"
+        ACCENT2="#2aa198"
+        URGENT="#dc322f"
+        GREEN="#859900"
+        YELLOW="#b58900"
+        CYAN="#2aa198"
+        HYPR_ACTIVE="rgba(268bd2ee)"
+        HYPR_ACTIVE2="rgba(2aa198ee)"
+        HYPR_INACTIVE="rgba(eee8d5aa)"
+        C0="#073642"; C8="#002b36"
+        C1="#dc322f"; C9="#cb4b16"
+        C2="#859900"; C10="#586e75"
+        C3="#b58900"; C11="#657b83"
+        C4="#268bd2"; C12="#839496"
+        C5="#d33682"; C13="#6c71c4"
+        C6="#2aa198"; C14="#93a1a1"
+        C7="#eee8d5"; C15="#fdf6e3"
+        ;;
+    *)
+        echo "Unknown theme: $CHOICE" >&2
+        exit 1
+        ;;
+esac
+
+echo "$NAME" > "$THEME_STATE"
+
+# 1. Hyprland Theme Module (~/.config/hypr/theme.lua)
+cat > "$HOME/.config/hypr/theme.lua" <<EOF
+-- Auto-generated by theme-switcher ($NAME)
+return {
+    name = "$NAME",
+    slug = "$SLUG",
+    active_border = { colors = { "$HYPR_ACTIVE", "$HYPR_ACTIVE2" }, angle = 45 },
+    inactive_border = "$HYPR_INACTIVE",
+    bg = "$BG",
+    fg = "$FG",
+    accent = "$ACCENT",
+}
+EOF
+
+# 2. Waybar CSS Colors (~/.config/waybar/colors.css)
+cat > "$HOME/.config/waybar/colors.css" <<EOF
+/* Auto-generated by theme-switcher ($NAME) */
+@define-color bg $BG;
+@define-color bg_alt $BG_ALT;
+@define-color surface $SURFACE;
+@define-color fg $FG;
+@define-color fg_dim $FG_DIM;
+@define-color accent $ACCENT;
+@define-color accent2 $ACCENT2;
+@define-color urgent $URGENT;
+@define-color green $GREEN;
+@define-color yellow $YELLOW;
+@define-color cyan $CYAN;
+EOF
+
+# 3. Rofi Theme Colors (~/.config/rofi/colors.rasi)
+cat > "$HOME/.config/rofi/colors.rasi" <<EOF
+/* Auto-generated by theme-switcher ($NAME) */
+* {
+    bg:        $BG;
+    bg-alt:    $BG_ALT;
+    surface:   $SURFACE;
+    fg:        $FG;
+    fg-dim:    $FG_DIM;
+    accent:    $ACCENT;
+    accent2:   $ACCENT2;
+    urgent:    $URGENT;
+}
+EOF
+
+# 4. Kitty Theme Colors (~/.config/kitty/colors.conf)
+cat > "$HOME/.config/kitty/colors.conf" <<EOF
+# Auto-generated by theme-switcher ($NAME)
+background            $BG
+foreground            $FG
+cursor                $ACCENT
+cursor_text_color     $BG
+selection_background  $SURFACE
+selection_foreground  $FG
+url_color             $ACCENT
+active_border_color   $ACCENT
+inactive_border_color $SURFACE
+active_tab_background $ACCENT
+active_tab_foreground $BG
+inactive_tab_background $BG_ALT
+inactive_tab_foreground $FG_DIM
+
+color0  $C0
+color8  $C8
+color1  $C1
+color9  $C9
+color2  $C2
+color10 $C10
+color3  $C3
+color11 $C11
+color4  $C4
+color12 $C12
+color5  $C5
+color13 $C13
+color6  $C6
+color14 $C14
+color7  $C7
+color15 $C15
+EOF
+
+# 5. SwayNC CSS Colors (~/.config/swaync/colors.css)
+cat > "$HOME/.config/swaync/colors.css" <<EOF
+/* Auto-generated by theme-switcher ($NAME) */
+@define-color bg $BG;
+@define-color bg_alt $BG_ALT;
+@define-color surface $SURFACE;
+@define-color fg $FG;
+@define-color fg_dim $FG_DIM;
+@define-color accent $ACCENT;
+@define-color urgent $URGENT;
+EOF
+
+# 6. Hyprpaper Config (~/.config/hypr/hyprpaper.conf)
+WALLPAPER="~/.local/share/wallpapers/${SLUG}.png"
+WALLPAPER_ABS="$WALLPAPER_DIR/${SLUG}.png"
+cat > "$HOME/.config/hypr/hyprpaper.conf" <<EOF
+preload = $WALLPAPER
+wallpaper = ,$WALLPAPER
+splash = false
+ipc = on
+EOF
+
+# 7. Sync GTK / Desktop Dark vs Light preference
+if command -v gsettings >/dev/null 2>&1; then
+    if [[ "$IS_LIGHT" -eq 1 ]]; then
+        gsettings set org.gnome.desktop.interface color-scheme 'prefer-light' 2>/dev/null || true
+    else
+        gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
+    fi
+fi
+
+# 8. Reload live components if running
+if pgrep -x kitty >/dev/null 2>&1; then
+    kill -SIGUSR1 $(pgrep -x kitty) 2>/dev/null || true
+fi
+
+if pgrep -x waybar >/dev/null 2>&1; then
+    pkill -SIGUSR2 waybar 2>/dev/null || true
+fi
+
+if pgrep -x swaync >/dev/null 2>&1; then
+    swaync-client -rs 2>/dev/null || true
+fi
+
+if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
+    hyprctl reload >/dev/null 2>&1 || true
+    if pgrep -x hyprpaper >/dev/null 2>&1; then
+        hyprctl hyprpaper reload ",$WALLPAPER_ABS" >/dev/null 2>&1 || {
+            pkill -x hyprpaper || true
+            hyprpaper &
+            disown
+        }
+    fi
+fi
+
+if command -v notify-send >/dev/null 2>&1 && [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
+    notify-send -a "Theme Switcher" -i preferences-desktop-theme "Theme Applied" "$NAME" || true
+fi

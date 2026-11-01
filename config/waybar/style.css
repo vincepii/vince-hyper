@@ -1,0 +1,150 @@
+@import "colors.css";
+
+* {
+  border: none;
+  border-radius: 0;
+  font-family: "JetBrainsMono Nerd Font", "Fira Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  min-height: 0;
+}
+
+window#waybar {
+  background-color: @bg;
+  color: @fg;
+  border-bottom: 1px solid @surface;
+}
+
+tooltip {
+  background-color: @bg_alt;
+  color: @fg;
+  border: 1px solid @accent;
+  border-radius: 8px;
+}
+
+#workspaces {
+  margin: 4px 6px;
+}
+
+#workspaces button {
+  padding: 0 10px;
+  margin: 0 2px;
+  color: @fg_dim;
+  background-color: transparent;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+#workspaces button:hover {
+  color: @fg;
+  background-color: @surface;
+}
+
+#workspaces button.active {
+  color: @bg;
+  background-color: @accent;
+  font-weight: 700;
+}
+
+#workspaces button.urgent {
+  color: @bg;
+  background-color: @urgent;
+}
+
+#submap {
+  margin: 4px 4px;
+  padding: 0 10px;
+  background-color: @urgent;
+  color: @bg;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+#window {
+  margin-left: 8px;
+  color: @fg_dim;
+  font-weight: 500;
+}
+
+#clock {
+  padding: 0 14px;
+  margin: 4px 0;
+  color: @fg;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+#clock:hover {
+  background-color: @surface;
+}
+
+#tray,
+#language,
+#custom-clipboard,
+#custom-theme,
+#pulseaudio,
+#network,
+#bluetooth,
+#cpu,
+#memory,
+#battery,
+#custom-notification,
+#custom-power {
+  padding: 0 10px;
+  margin: 4px 2px;
+  background-color: @bg_alt;
+  color: @fg;
+  border-radius: 6px;
+}
+
+#language:hover,
+#custom-clipboard:hover,
+#custom-theme:hover,
+#pulseaudio:hover,
+#network:hover,
+#bluetooth:hover,
+#cpu:hover,
+#memory:hover,
+#custom-notification:hover {
+  background-color: @surface;
+  color: @accent;
+}
+
+#custom-theme {
+  color: @accent2;
+}
+
+#custom-clipboard {
+  color: @cyan;
+}
+
+#pulseaudio.muted {
+  color: @fg_dim;
+}
+
+#network.disconnected {
+  color: @urgent;
+}
+
+#battery.charging,
+#battery.plugged {
+  color: @green;
+}
+
+#battery.warning:not(.charging) {
+  color: @yellow;
+}
+
+#battery.critical:not(.charging) {
+  color: @urgent;
+}
+
+#custom-power {
+  margin-right: 6px;
+  color: @urgent;
+}
+
+#custom-power:hover {
+  background-color: @urgent;
+  color: @bg;
+}

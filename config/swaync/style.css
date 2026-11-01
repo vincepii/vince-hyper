@@ -1,0 +1,86 @@
+@import "colors.css";
+
+* {
+  font-family: "JetBrainsMono Nerd Font", "Fira Sans", sans-serif;
+  font-size: 13px;
+}
+
+.notification-row {
+  outline: none;
+}
+
+.notification {
+  background: @bg;
+  color: @fg;
+  border: 2px solid @accent;
+  border-radius: 10px;
+  margin: 6px;
+  padding: 10px;
+}
+
+.notification-content {
+  background: transparent;
+}
+
+.summary {
+  color: @fg;
+  font-weight: 700;
+}
+
+.time {
+  color: @fg_dim;
+  font-size: 11px;
+}
+
+.body {
+  color: @fg;
+}
+
+.control-center {
+  background: @bg;
+  color: @fg;
+  border: 2px solid @accent;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.control-center-list {
+  background: transparent;
+}
+
+.widget-title {
+  color: @accent;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.widget-title > button {
+  background: @surface;
+  color: @fg;
+  border-radius: 6px;
+  padding: 4px 10px;
+  border: 1px solid @accent;
+}
+
+.widget-title > button:hover {
+  background: @accent;
+  color: @bg;
+}
+
+.widget-dnd {
+  background: @bg_alt;
+  color: @fg;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+}
+
+.widget-dnd > switch {
+  background: @surface;
+  border-radius: 8px;
+}
+
+.widget-dnd > switch:checked {
+  background: @accent;
+}
