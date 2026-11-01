@@ -17,13 +17,14 @@ Super + Shift + Space       │ Toggle Floating Window
 Super + Q / Super + W       │ Close Active Window
 Super + 1..0                │ Switch to Workspace 1..10
 Super + Shift + 1..0        │ Move Window to Workspace 1..10
-Super + S                   │ Toggle Scratchpad Workspace
-Super + Shift + S           │ Send Window to Scratchpad
-Print / Super + P           │ Screenshot Region (Copy + Save)
-Shift + Print               │ Screenshot Fullscreen (Copy + Save)
-Alt + Print                 │ Screenshot Active Window
+Super + ` (Grave)           │ Toggle Scratchpad Workspace
+Super + Shift + ` (Grave)   │ Send Window to Scratchpad
+Super + Shift + S           │ Screenshot Region (Copy + Save)
+Super + S / Super + Alt + S │ Screenshot Region + Annotate / Edit (satty)
+Super + Ctrl + S            │ Screenshot Fullscreen (Copy + Save)
+Super + P                   │ Screenshot Active Window
 Super + C                   │ Clipboard History (Rofi + cliphist)
-Super + Shift + T           │ Theme Selector (Tokyo Night, Catppuccin, etc.)
+Super + Shift + T           │ Theme Selector (Dark & Light Themes)
 Super + N                   │ Toggle Notification Center (SwayNC)
 Super + Escape / Super + X  │ Power Menu (Lock, Suspend, Reboot, Shutdown)
 Super + Ctrl + L            │ Lock Screen Immediately (Hyprlock)

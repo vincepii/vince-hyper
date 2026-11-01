@@ -103,9 +103,11 @@ git diff
 | **`Super + Q`** *(or `Super + W`)* | Close Active Window |
 | **`Super + 1..0`** | Switch to Workspace 1–10 |
 | **`Super + Shift + 1..0`** | Move Active Window to Workspace 1–10 |
-| **`Super + S`** / **`Super + Shift + S`** | Toggle Scratchpad / Move Window to Scratchpad |
-| **`Print`** *(or `Super + P`)* | Screenshot Region -> Clipboard + `~/Pictures/Screenshots/` |
-| **`Shift + Print`** / **`Alt + Print`** | Screenshot Fullscreen / Screenshot Active Window |
+| **`Super + \`` (Grave)** / **`Super + Shift + \``** | Toggle Scratchpad / Move Window to Scratchpad |
+| **`Super + Shift + S`** *(or `Print`)* | Screenshot Region -> Clipboard + `~/Pictures/Screenshots/` |
+| **`Super + S`** *(or `Super + Alt + S`)* | Screenshot Region + Edit/Annotate (`satty`) -> Clipboard + Save |
+| **`Super + Ctrl + S`** *(or `Shift + Print`)* | Screenshot Fullscreen -> Clipboard + Save |
+| **`Super + P`** *(or `Alt + Print`)* | Screenshot Active Window -> Clipboard + Save |
 | **`Super + Shift + C`** | Color Picker (`hyprpicker` -> Hex to Clipboard) |
 | **`Super + C`** | Clipboard History (`cliphist` + Rofi) |
 | **`Super + Shift + T`** | Theme Selector (`theme-switcher`) |

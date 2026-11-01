@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Screenshot helper using grim + slurp + wl-copy + notify-send
+# Screenshot helper using grim + slurp + wl-copy (+ satty/swappy for annotation)
 set -euo pipefail
 
 DIR="$HOME/Pictures/Screenshots"
@@ -14,6 +14,26 @@ case "$MODE" in
         [[ -z "$GEOM" ]] && exit 0
         grim -g "$GEOM" "$FILE"
         ;;
+    edit|region-edit)
+        GEOM=$(slurp 2>/dev/null) || exit 0
+        [[ -z "$GEOM" ]] && exit 0
+        if command -v satty >/dev/null 2>&1; then
+            grim -g "$GEOM" - | satty --filename - \
+                --output-filename "$FILE" \
+                --early-exit \
+                --copy-command "wl-copy"
+            exit 0
+        elif command -v swappy >/dev/null 2>&1; then
+            grim -g "$GEOM" - | swappy -f - -o "$FILE"
+            [[ -f "$FILE" ]] && wl-copy < "$FILE"
+            exit 0
+        else
+            grim -g "$GEOM" "$FILE"
+            wl-copy < "$FILE"
+            notify-send -a "Screenshot" -i "$FILE" "Screenshot Captured (Install 'satty' to annotate)" "Copied to clipboard & saved to:\n$(basename "$FILE")"
+            exit 0
+        fi
+        ;;
     full)
         grim "$FILE"
         ;;
@@ -26,7 +46,7 @@ case "$MODE" in
         fi
         ;;
     *)
-        echo "Usage: screenshot [region|full|window]" >&2
+        echo "Usage: screenshot [region|edit|full|window]" >&2
         exit 1
         ;;
 esac

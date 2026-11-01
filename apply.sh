@@ -32,6 +32,7 @@ REQUIRED_PKGS=(
     cliphist
     grim
     slurp
+    satty
     libnotify
     pavucontrol
     nm-connection-editor
@@ -193,7 +194,21 @@ if [[ -f "$HOME/.config/fish/config.fish" ]] && ! grep -q '\.local/bin' "$HOME/.
     sed -i '1i fish_add_path -g $HOME/.local/bin' "$HOME/.config/fish/config.fish"
 fi
 
-# 5. Generate wallpapers & apply theme
+# 5. Optional non-intrusive SSH Agent socket setup (only if openssh + systemd user socket exist)
+if systemctl --user list-unit-files ssh-agent.socket >/dev/null 2>&1; then
+    systemctl --user enable --now ssh-agent.socket >/dev/null 2>&1 || true
+    if [[ -f "$HOME/.config/fish/config.fish" ]] && ! grep -q 'SSH_AUTH_SOCK' "$HOME/.config/fish/config.fish"; then
+        cat >> "$HOME/.config/fish/config.fish" << 'FISHEOF'
+
+# Use systemd user ssh-agent socket if available and SSH_AUTH_SOCK is not already set
+if not set -q SSH_AUTH_SOCK; and test -S "$XDG_RUNTIME_DIR/ssh-agent.socket"
+    set -gx SSH_AUTH_SOCK "$XDG_RUNTIME_DIR/ssh-agent.socket"
+end
+FISHEOF
+    fi
+fi
+
+# 6. Generate wallpapers & apply theme
 generate_wallpapers
 CURRENT_THEME="$(cat "$HOME/.config/themes/current" 2>/dev/null || echo "Tokyo Night")"
 "$HOME/.local/bin/theme-switcher" "$CURRENT_THEME"

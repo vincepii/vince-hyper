@@ -56,6 +56,9 @@ hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 hl.env("GDK_BACKEND", "wayland,x11,*")
 hl.env("PATH", home .. "/.local/bin:" .. (os.getenv("PATH") or "/usr/local/bin:/usr/bin"))
+if os.getenv("XDG_RUNTIME_DIR") then
+    hl.env("SSH_AUTH_SOCK", os.getenv("XDG_RUNTIME_DIR") .. "/ssh-agent.socket")
+end
 
 -------------------
 ---- AUTOSTART ----
@@ -261,8 +264,8 @@ hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
 
 -- Scratchpad (Special Workspace)
-hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("scratchpad"), { description = "Toggle Scratchpad" })
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:scratchpad" }), { description = "Send to Scratchpad" })
+hl.bind(mainMod .. " + grave",         hl.dsp.workspace.toggle_special("scratchpad"), { description = "Toggle Scratchpad" })
+hl.bind(mainMod .. " + SHIFT + grave", hl.dsp.window.move({ workspace = "special:scratchpad" }), { description = "Send to Scratchpad" })
 
 -- Mouse Drag & Resize
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
@@ -275,9 +278,13 @@ hl.bind(mainMod .. " + N",         hl.dsp.exec_cmd("swaync-client -t -sw"), { de
 hl.bind(mainMod .. " + Slash",     hl.dsp.exec_cmd(keybindMenu), { description = "Keybind Cheat Sheet" })
 hl.bind(mainMod .. " + SHIFT + Slash", hl.dsp.exec_cmd(keybindMenu), { description = "Keybind Cheat Sheet" })
 
--- Screenshots
+-- Screenshots (Print-less friendly + Print fallback)
+hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd(screenshot .. " region"), { description = "Screenshot Region (Copy + Save)" })
+hl.bind(mainMod .. " + S",         hl.dsp.exec_cmd(screenshot .. " edit"),   { description = "Screenshot Region + Annotate (satty)" })
+hl.bind(mainMod .. " + ALT + S",   hl.dsp.exec_cmd(screenshot .. " edit"),   { description = "Screenshot Region + Annotate (satty)" })
+hl.bind(mainMod .. " + CTRL + S",  hl.dsp.exec_cmd(screenshot .. " full"),   { description = "Screenshot Fullscreen" })
+hl.bind(mainMod .. " + P",         hl.dsp.exec_cmd(screenshot .. " window"), { description = "Screenshot Active Window" })
 hl.bind("Print",                   hl.dsp.exec_cmd(screenshot .. " region"), { description = "Screenshot Region" })
-hl.bind(mainMod .. " + P",         hl.dsp.exec_cmd(screenshot .. " region"), { description = "Screenshot Region" })
 hl.bind("SHIFT + Print",           hl.dsp.exec_cmd(screenshot .. " full"),   { description = "Screenshot Fullscreen" })
 hl.bind("ALT + Print",             hl.dsp.exec_cmd(screenshot .. " window"), { description = "Screenshot Active Window" })
 hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd("hyprpicker -a -n"),      { description = "Color Picker (Hex to Clipboard)" })
