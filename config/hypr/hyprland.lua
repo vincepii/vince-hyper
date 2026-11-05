@@ -350,8 +350,36 @@ for _, cls in ipairs(floatClasses) do
     hl.window_rule({ match = { class = cls }, float = true, center = true })
 end
 
+-- Authentication / Polkit / Pinentry dialogs: always float, center, dim background, and keep keyboard focus
+local authClasses = {
+    "^(hyprpolkitagent)$",
+    "^(polkit-gnome-authentication-agent-1)$",
+    "^(org\\.kde\\.polkit-kde-authentication-agent-1)$",
+    "^(pinentry-.*)$",
+    "^(gcr-prompter)$",
+}
+for _, cls in ipairs(authClasses) do
+    hl.window_rule({
+        match        = { class = cls },
+        float        = true,
+        center       = true,
+        stay_focused = true,
+        pin          = true,
+        dim_around   = true,
+    })
+end
+
+hl.window_rule({
+    match        = { title = "^(Authentication Required|Authenticate|Unlock Keyring|Enter Password.*)$" },
+    float        = true,
+    center       = true,
+    stay_focused = true,
+    pin          = true,
+    dim_around   = true,
+})
+
 local floatTitles = {
-    "^(Open|Open File|Save As|Confirm to replace files|File Operation Progress|Authentication Required)$",
+    "^(Open|Open File|Save As|Confirm to replace files|File Operation Progress)$",
     "^(Picture-in-Picture)$",
 }
 for _, ttl in ipairs(floatTitles) do
