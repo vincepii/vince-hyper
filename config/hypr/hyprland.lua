@@ -149,7 +149,7 @@ hl.config({
     },
 
     binds = {
-        workspace_back_and_forth = true,
+        workspace_back_and_forth = false,
         allow_workspace_cycles   = true,
     },
 })
