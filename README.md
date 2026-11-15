@@ -125,7 +125,7 @@ git diff
 | **`Super + Shift + W`** | Wallpaper Selector (`wallpaper-switcher` / Right-click `󰔎` in bar) |
 | **`Super + N`** | Toggle Notification Center (`swaync`) |
 | **`Super + Escape`** *(or `Super + X`)* | Power Menu (Lock, Suspend, Logout, Reboot, Shutdown) |
-| **`Super + Ctrl + L`** | Lock Screen Immediately (`hyprlock`) |
+| **`Ctrl + Alt + L`** | Lock Screen Immediately (`hyprlock`) |
 | **`Super + /`** *(or `Super + ?`)* | Open Searchable Keybind Cheat Sheet |
 | **`CapsLock`** / **`Super + Ctrl + Space`** | Switch Keyboard Layout (`US` <-> `IT`) across all devices + SwayOSD |
 

@@ -343,7 +343,7 @@ hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd("hyprpicker -a -n"),      { d
 -- Lock & Power Menu
 hl.bind(mainMod .. " + Escape",    hl.dsp.exec_cmd(powerMenu), { description = "Power Menu" })
 hl.bind(mainMod .. " + X",         hl.dsp.exec_cmd(powerMenu), { description = "Power Menu" })
-hl.bind(mainMod .. " + CTRL + L",  hl.dsp.exec_cmd("pidof hyprlock || hyprlock"), { description = "Lock Screen" })
+hl.bind("CTRL + ALT + L",          hl.dsp.exec_cmd("pidof hyprlock || hyprlock"), { description = "Lock Screen" })
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload && pkill -SIGUSR2 waybar"), { description = "Reload Config" })
 
 -- 9. Hardware / Media Keys (SwayOSD On-Screen Display with wpctl/brightnessctl/playerctl fallback)

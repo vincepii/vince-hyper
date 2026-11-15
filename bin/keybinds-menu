@@ -39,6 +39,6 @@ Super + Shift + T           │ Theme Selector (12 Dark & Light Themes)
 Super + Shift + W           │ Wallpaper Selector (Pictures & System Wallpapers)
 Super + N                   │ Toggle Notification Center (SwayNC)
 Super + Escape / Super + X  │ Power Menu (Lock, Suspend, Reboot, Shutdown)
-Super + Ctrl + L            │ Lock Screen Immediately (Hyprlock)
+Ctrl + Alt + L              │ Lock Screen Immediately (Hyprlock)
 CapsLock / Super+Ctrl+Space │ Switch US / IT Keyboard Layout (All Devices + OSD)
 EOF
