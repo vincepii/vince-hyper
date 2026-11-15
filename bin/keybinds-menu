@@ -6,32 +6,39 @@ if pkill -x rofi 2>/dev/null; then
     exit 0
 fi
 
-cat << 'EOF' | rofi -dmenu -i -p "󰌌 Keybinds" -theme-str 'window {width: 680px;} listview {lines: 16;}'
+cat << 'EOF' | rofi -dmenu -i -p "󰌌 Keybinds" -theme-str 'window {width: 720px;} listview {lines: 18;}'
 Super (Tap) / Super + D     │ App Launcher (Rofi)
+Super + Tab / Alt + Tab     │ Window Switcher (Rofi) / Cycle Next Window
+Super + =                   │ Inline Calculator (Rofi + qalc, auto-copies result)
+Super + .                   │ Emoji Picker (rofimoji -> Clipboard)
 Super + Return              │ Terminal (Kitty)
 Super + B                   │ Browser (Google Chrome)
 Super + E                   │ File Manager (Nautilus)
+Ctrl + Shift + Escape       │ Toggle Floating System Monitor (btop)
 Super + H / J / K / L       │ Focus Left / Down / Up / Right
 Super + Shift + H / J / K / L│ Move Window Left / Down / Up / Right
 Super + Ctrl + H / J / K / L│ Resize Window Left / Down / Up / Right
-Super + V / Super + \       │ Toggle Split Direction (Dwindle)
-Super + F                   │ Toggle Fullscreen
+Super + O / Super + \       │ Toggle Split Direction (Dwindle)
+Super + F                   │ Toggle Fullscreen (Inhibits Idle)
 Super + M                   │ Toggle Maximize (Keep Bar)
 Super + Shift + Space       │ Toggle Floating Window
 Super + Q / Super + W       │ Close Active Window
 Super + 1..0                │ Switch to Workspace 1..10
-Super + Shift + 1..0        │ Move Window to Workspace 1..10
+Super + Shift + 1..0        │ Move Window to Workspace 1..10 (Follow)
+Super + Ctrl + 1..0         │ Move Window Silently to Workspace 1..10
+Super + [ / Super + ]       │ Cycle Previous / Next Workspace
 Super + ` (Grave)           │ Toggle Scratchpad Workspace
 Super + Shift + ` (Grave)   │ Send Window to Scratchpad
 Super + Shift + S           │ Screenshot Region (Copy + Save)
 Super + S / Super + Alt + S │ Screenshot Region + Annotate / Edit (satty)
 Super + Ctrl + S            │ Screenshot Fullscreen (Copy + Save)
 Super + P                   │ Screenshot Active Window
-Super + C                   │ Clipboard History (Rofi + cliphist)
-Super + Shift + T           │ Theme Selector (Dark & Light Themes)
+Super + Shift + C           │ Color Picker (Hex to Clipboard)
+Super + V (or Super + C)    │ Clipboard History (Rofi + cliphist)
+Super + Shift + T           │ Theme Selector (12 Dark & Light Themes)
 Super + Shift + W           │ Wallpaper Selector (Pictures & System Wallpapers)
 Super + N                   │ Toggle Notification Center (SwayNC)
 Super + Escape / Super + X  │ Power Menu (Lock, Suspend, Reboot, Shutdown)
 Super + Ctrl + L            │ Lock Screen Immediately (Hyprlock)
-CapsLock                    │ Toggle US / IT Keyboard Layout
+CapsLock / Super+Ctrl+Space │ Switch US / IT Keyboard Layout (All Devices + OSD)
 EOF

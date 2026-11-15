@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Synchronized Multi-Device Keyboard Layout Switcher (US <-> IT)
+# ==============================================================================
+# Queries the primary keyboard's active_layout_index via hyprctl and forces ALL
+# keyboard devices onto the explicit target index (0 = US, 1 = IT) so multi-HID
+# keyboards and Waybar's hyprland/language module never desynchronize.
+# ==============================================================================
+
+set -euo pipefail
+
+CURRENT_IDX="$(
+    hyprctl -j devices 2>/dev/null | jq -r '
+        ([.keyboards[] | select(.main == true) | .active_layout_index][0])
+        // (.keyboards[0].active_layout_index)
+        // 0
+    ' 2>/dev/null || echo 0
+)"
+
+if [[ "$CURRENT_IDX" == "0" ]]; then
+    TARGET_IDX=1
+    LABEL="Keyboard: IT (Italian)"
+else
+    TARGET_IDX=0
+    LABEL="Keyboard: US (English)"
+fi
+
+hyprctl switchxkblayout all "$TARGET_IDX" >/dev/null 2>&1 || true
+
+if command -v swayosd-client >/dev/null 2>&1 && pgrep -x swayosd-server >/dev/null 2>&1; then
+    swayosd-client --custom-icon input-keyboard-symbolic --custom-message "$LABEL" >/dev/null 2>&1 &
+elif command -v notify-send >/dev/null 2>&1; then
+    notify-send -a "Keyboard Layout" -i input-keyboard-symbolic -t 1500 \
+        -h string:x-canonical-private-synchronous:kb-layout "$LABEL" >/dev/null 2>&1 &
+fi

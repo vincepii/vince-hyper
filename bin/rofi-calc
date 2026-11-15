@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Rofi Inline Calculator Mode (qalc + Python math fallback + clipboard copy)
+# ==============================================================================
+# Usage:
+#   rofi -show calc -modi "calc:~/.local/bin/rofi-calc"
+# ==============================================================================
+
+set -euo pipefail
+
+HIST_FILE="$HOME/.cache/rofi-calc-history"
+ANS_FILE="$HOME/.cache/rofi-calc-ans"
+MAX_HIST=15
+
+mkdir -p "$HOME/.cache"
+touch "$HIST_FILE"
+
+printf '\0prompt\x1f󰪚 Calc\n'
+printf '\0no-custom\x1ffalse\n'
+
+INPUT="${1:-}"
+
+extract_rhs() {
+    local line="$1"
+    if [[ "$line" == *" = "* ]]; then
+        printf '%s' "${line##* = }"
+    elif [[ "$line" == *" ≈ "* ]]; then
+        printf '%s' "${line##* ≈ }"
+    else
+        printf '%s' "$line"
+    fi
+}
+
+copy_to_clipboard() {
+    local val="$1"
+    if command -v wl-copy >/dev/null 2>&1; then
+        printf '%s' "$val" | wl-copy >/dev/null 2>&1 || true
+    fi
+}
+
+if [[ -n "$INPUT" ]]; then
+    if [[ "$INPUT" == "󰆴  Clear History" ]]; then
+        : > "$HIST_FILE"
+        rm -f "$ANS_FILE"
+        printf '󰪚  Type an expression (e.g. 1920*1.25, sqrt(2), 0xff in bin)\n'
+        exit 0
+    fi
+
+    if [[ "$INPUT" == "󰅌  "* ]]; then
+        CLEAN="${INPUT#󰅌  }"
+        VAL="$(extract_rhs "$CLEAN")"
+        copy_to_clipboard "$VAL"
+        printf '%s\n' "$VAL" > "$ANS_FILE"
+        printf '󰅌  %s\n' "$CLEAN"
+    elif [[ "$INPUT" == "   "* ]]; then
+        CLEAN="${INPUT#   }"
+        VAL="$(extract_rhs "$CLEAN")"
+        copy_to_clipboard "$VAL"
+        printf '%s\n' "$VAL" > "$ANS_FILE"
+        printf '󰅌  %s\n' "$CLEAN"
+    else
+        EXPR="$INPUT"
+        if [[ -f "$ANS_FILE" ]]; then
+            LAST_ANS="$(cat "$ANS_FILE")"
+            if [[ -n "$LAST_ANS" ]]; then
+                EXPR="$(python3 -c 'import re, sys; print(re.sub(r"\bans\b", sys.argv[1], sys.argv[2]))' "$LAST_ANS" "$EXPR" 2>/dev/null || printf '%s' "$EXPR")"
+            fi
+        fi
+
+        RESULT=""
+        if command -v qalc >/dev/null 2>&1; then
+            RESULT="$(LC_NUMERIC=C qalc -t "$EXPR" 2>/dev/null | head -n 1 | tr -d '\r' || true)"
+        fi
+        if [[ -z "$RESULT" || "$RESULT" == *"error"* || "$RESULT" == *"Error"* ]]; then
+            RESULT="$(python3 -c '
+import math, sys
+expr = sys.argv[1].replace("^", "**")
+allowed = {k: getattr(math, k) for k in dir(math) if not k.startswith("_")}
+allowed.update({"abs": abs, "round": round, "min": min, "max": max, "pow": pow, "hex": hex, "bin": bin, "oct": oct})
+print(eval(expr, {"__builtins__": {}}, allowed))
+' "$EXPR" 2>/dev/null || true)"
+        fi
+
+        if [[ -n "$RESULT" ]]; then
+            ENTRY="$INPUT = $RESULT"
+            printf '%s\n' "$RESULT" > "$ANS_FILE"
+            copy_to_clipboard "$RESULT"
+            {
+                printf '%s\n' "$ENTRY"
+                grep -Fxv "$ENTRY" "$HIST_FILE" 2>/dev/null || true
+            } | head -n "$MAX_HIST" > "${HIST_FILE}.tmp"
+            mv "${HIST_FILE}.tmp" "$HIST_FILE"
+            printf '󰅌  %s\n' "$ENTRY"
+        else
+            printf '󰅙  Invalid expression: %s\n' "$INPUT"
+        fi
+    fi
+fi
+
+if [[ -s "$HIST_FILE" ]]; then
+    while IFS= read -r line; do
+        [[ -z "$line" ]] && continue
+        if [[ -n "$INPUT" && "$line" == "${ENTRY:-}" ]]; then
+            continue
+        fi
+        printf '   %s\n' "$line"
+    done < "$HIST_FILE"
+    printf '󰆴  Clear History\n'
+else
+    printf '󰪚  Type an expression (e.g. 1920*1.25, sqrt(2), 0xff in bin)\n'
+fi

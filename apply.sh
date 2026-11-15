@@ -25,7 +25,11 @@ REQUIRED_PKGS=(
     xdg-desktop-portal-hyprland
     waybar
     rofi
+    rofimoji
+    wtype
     swaync
+    swayosd
+    libqalculate
     kitty
     nautilus
     wl-clipboard
@@ -43,6 +47,8 @@ REQUIRED_PKGS=(
     btop
     jq
     python
+    xorg-xrdb
+    papirus-icon-theme
     greetd
     greetd-tuigreet
     ttf-jetbrains-mono-nerd
@@ -72,11 +78,15 @@ sync_back() {
           "$HOME/.config/swaync/style.css" \
           "$REPO_DIR/config/swaync/"
 
+    mkdir -p "$REPO_DIR/config/fontconfig"
+    [[ -f "$HOME/.config/fontconfig/fonts.conf" ]] && cp -a "$HOME/.config/fontconfig/fonts.conf" "$REPO_DIR/config/fontconfig/"
     [[ -f "$HOME/.config/uwsm/env" ]] && cp -a "$HOME/.config/uwsm/env" "$REPO_DIR/config/uwsm/"
     [[ -f "$HOME/.config/mimeapps.list" ]] && cp -a "$HOME/.config/mimeapps.list" "$REPO_DIR/config/"
 
     cp -a "$HOME/.local/bin/theme-switcher" \
           "$HOME/.local/bin/wallpaper-switcher" \
+          "$HOME/.local/bin/switch-layout" \
+          "$HOME/.local/bin/rofi-calc" \
           "$HOME/.local/bin/screenshot" \
           "$HOME/.local/bin/clipboard-menu" \
           "$HOME/.local/bin/power-menu" \
@@ -118,9 +128,11 @@ themes = {
     "nord.png":             ((36, 41, 51), (46, 52, 64)),
     "rose-pine.png":        ((25, 23, 36), (31, 29, 46)),
     "everforest.png":       ((30, 35, 38), (45, 53, 59)),
+    "tokyo-night-day.png":  ((208, 213, 227), (225, 226, 231)),
     "catppuccin-latte.png": ((230, 233, 239), (239, 241, 245)),
     "gruvbox-light.png":    ((242, 229, 188), (251, 241, 199)),
     "rose-pine-dawn.png":   ((242, 233, 225), (250, 244, 237)),
+    "everforest-light.png": ((244, 240, 217), (253, 246, 227)),
     "solarized-light.png":  ((238, 232, 213), (253, 246, 227)),
 }
 for name, (top, bot) in themes.items():
@@ -148,6 +160,16 @@ else
     echo "==> All required packages are already installed."
 fi
 
+# Configure SwayOSD libinput backend (if enabled) to ignore CapsLock so it doesn't
+# compete with bin/switch-layout's custom US/IT layout OSD toast.
+if systemctl is-enabled swayosd-libinput-backend.service >/dev/null 2>&1 || [[ -d /etc/xdg/swayosd ]]; then
+    if [[ ! -f /etc/xdg/swayosd/backend.toml ]] || ! grep -q "ignore_caps_lock_key = true" /etc/xdg/swayosd/backend.toml 2>/dev/null; then
+        echo "==> Configuring /etc/xdg/swayosd/backend.toml (ignore_caps_lock_key = true)..."
+        sudo mkdir -p /etc/xdg/swayosd
+        printf '[input]\nignore_caps_lock_key = true\n' | sudo tee /etc/xdg/swayosd/backend.toml >/dev/null || true
+    fi
+fi
+
 # 2. Remember user's currently active theme before touching ~/.config
 CURRENT_THEME=""
 if [[ -f "$HOME/.config/themes/current" ]]; then
@@ -158,7 +180,7 @@ fi
 TIMESTAMP="$(date +'%Y%m%d-%H%M%S')"
 BACKUP_DIR="$HOME/.cache/vince-hyper-backup-$TIMESTAMP"
 mkdir -p "$BACKUP_DIR"
-for dir in hypr waybar rofi kitty swaync themes uwsm; do
+for dir in hypr waybar rofi kitty swaync fontconfig themes uwsm; do
     if [[ -d "$HOME/.config/$dir" ]]; then
         cp -a "$HOME/.config/$dir" "$BACKUP_DIR/"
     fi
@@ -171,6 +193,7 @@ mkdir -p "$HOME/.config/hypr" \
          "$HOME/.config/rofi" \
          "$HOME/.config/kitty" \
          "$HOME/.config/swaync" \
+         "$HOME/.config/fontconfig" \
          "$HOME/.config/themes" \
          "$HOME/.config/uwsm" \
          "$HOME/.local/bin" \
@@ -179,18 +202,21 @@ mkdir -p "$HOME/.config/hypr" \
 
 # 5. Copy configs & helper scripts
 echo "==> Installing configurations into ~/.config..."
-cp -a "$REPO_DIR/config/hypr/"*   "$HOME/.config/hypr/"
-cp -a "$REPO_DIR/config/waybar/"* "$HOME/.config/waybar/"
-cp -a "$REPO_DIR/config/rofi/"*   "$HOME/.config/rofi/"
-cp -a "$REPO_DIR/config/kitty/"*  "$HOME/.config/kitty/"
-cp -a "$REPO_DIR/config/swaync/"* "$HOME/.config/swaync/"
-cp -a "$REPO_DIR/config/uwsm/"*   "$HOME/.config/uwsm/"
+cp -a "$REPO_DIR/config/hypr/"*       "$HOME/.config/hypr/"
+cp -a "$REPO_DIR/config/waybar/"*     "$HOME/.config/waybar/"
+cp -a "$REPO_DIR/config/rofi/"*       "$HOME/.config/rofi/"
+cp -a "$REPO_DIR/config/kitty/"*      "$HOME/.config/kitty/"
+cp -a "$REPO_DIR/config/swaync/"*     "$HOME/.config/swaync/"
+cp -a "$REPO_DIR/config/fontconfig/"* "$HOME/.config/fontconfig/"
+cp -a "$REPO_DIR/config/uwsm/"*       "$HOME/.config/uwsm/"
 cp -a "$REPO_DIR/config/mimeapps.list" "$HOME/.config/mimeapps.list"
 
 echo "==> Installing utility scripts into ~/.local/bin..."
 cp -a "$REPO_DIR/bin/"* "$HOME/.local/bin/"
 chmod +x "$HOME/.local/bin/theme-switcher" \
          "$HOME/.local/bin/wallpaper-switcher" \
+         "$HOME/.local/bin/switch-layout" \
+         "$HOME/.local/bin/rofi-calc" \
          "$HOME/.local/bin/screenshot" \
          "$HOME/.local/bin/clipboard-menu" \
          "$HOME/.local/bin/power-menu" \
@@ -220,7 +246,16 @@ FISHEOF
     fi
 fi
 
-# 8. Generate wallpapers & re-apply user's active theme (or Tokyo Night on first install)
+# 8. Refresh font cache & start SwayOSD if running inside Hyprland
+fc-cache -f >/dev/null 2>&1 || true
+if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]] && command -v swayosd-server >/dev/null 2>&1; then
+    if ! pgrep -x swayosd-server >/dev/null 2>&1; then
+        nohup swayosd-server >/dev/null 2>&1 &
+        disown
+    fi
+fi
+
+# 9. Generate wallpapers & re-apply user's active theme (or Tokyo Night on first install)
 generate_wallpapers
 if [[ -z "$CURRENT_THEME" ]]; then
     CURRENT_THEME="Tokyo Night"

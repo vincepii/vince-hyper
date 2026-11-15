@@ -4,6 +4,7 @@ export PATH="$HOME/.local/bin:$PATH"
 export QT_QPA_PLATFORM="wayland;xcb"
 export QT_QPA_PLATFORMTHEME="qt6ct"
 export ELECTRON_OZONE_PLATFORM_HINT="auto"
+export FREETYPE_PROPERTIES="cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"
 export HYPRCURSOR_THEME="Bibata-Modern-Ice"
 export HYPRCURSOR_SIZE=24
 export XCURSOR_THEME="Bibata-Modern-Ice"

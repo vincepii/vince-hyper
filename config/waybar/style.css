@@ -3,32 +3,59 @@
 * {
   border: none;
   border-radius: 0;
-  font-family: "JetBrainsMono Nerd Font", "Fira Sans", sans-serif;
+  font-family: "JetBrainsMono Nerd Font", "Noto Sans", sans-serif;
   font-size: 13px;
   font-weight: 500;
   min-height: 0;
 }
 
 window#waybar {
-  background-color: @bg;
+  background-color: @bg_bar;
   color: @fg;
-  border-bottom: 1px solid @surface;
+  border-radius: 12px;
+  border: 1px solid alpha(@accent, 0.35);
 }
 
 tooltip {
-  background-color: @bg_alt;
+  background-color: @bg_bar;
   color: @fg;
-  border: 1px solid @accent;
+  border: 2px solid @accent;
+  border-radius: 12px;
+}
+
+tooltip label {
+  color: @fg;
+  padding: 6px;
+}
+
+/* Left launcher pill */
+#custom-launcher {
+  margin: 4px 2px 4px 6px;
+  padding: 0 12px;
+  background-color: @accent;
+  color: @dark_text;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+#custom-launcher:hover {
+  background-color: @accent2;
+  color: @dark_text;
+}
+
+/* Workspaces pill container */
+#workspaces {
+  margin: 4px 2px;
+  padding: 0 4px;
+  background-color: @bg_pill;
   border-radius: 8px;
 }
 
-#workspaces {
-  margin: 4px 6px;
-}
-
 #workspaces button {
-  padding: 0 10px;
-  margin: 0 2px;
+  padding: 0 9px;
+  margin: 3px 2px;
   color: @fg_dim;
   background-color: transparent;
   border-radius: 6px;
@@ -37,48 +64,58 @@ tooltip {
 
 #workspaces button:hover {
   color: @fg;
-  background-color: @surface;
+  background-color: alpha(@accent, 0.25);
 }
 
 #workspaces button.active {
-  color: @bg;
+  color: @dark_text;
   background-color: @accent;
   font-weight: 700;
+  border-radius: 6px;
 }
 
 #workspaces button.urgent {
-  color: @bg;
+  color: @dark_text;
   background-color: @urgent;
+  font-weight: 700;
+  border-radius: 6px;
 }
 
 #submap {
   margin: 4px 4px;
   padding: 0 10px;
   background-color: @urgent;
-  color: @bg;
-  border-radius: 6px;
+  color: @dark_text;
+  border-radius: 8px;
   font-weight: 700;
 }
 
 #window {
   margin-left: 8px;
-  color: @fg_dim;
+  color: @fg;
   font-weight: 500;
 }
 
+/* Center clock pill */
 #clock {
   padding: 0 14px;
   margin: 4px 0;
-  color: @fg;
+  background-color: @bg_pill;
+  color: @accent;
   font-weight: 600;
-  border-radius: 6px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
 }
 
 #clock:hover {
-  background-color: @surface;
+  background-color: alpha(@accent, 0.22);
+  color: @fg;
 }
 
+/* Uniform right-side module pills */
+#mpris,
 #tray,
+#idle_inhibitor,
 #language,
 #custom-clipboard,
 #custom-theme,
@@ -90,13 +127,16 @@ tooltip {
 #battery,
 #custom-notification,
 #custom-power {
-  padding: 0 10px;
+  padding: 0 11px;
   margin: 4px 2px;
-  background-color: @bg_alt;
+  background-color: @bg_pill;
   color: @fg;
-  border-radius: 6px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
 }
 
+#mpris:hover,
+#idle_inhibitor:hover,
 #language:hover,
 #custom-clipboard:hover,
 #custom-theme:hover,
@@ -105,25 +145,78 @@ tooltip {
 #bluetooth:hover,
 #cpu:hover,
 #memory:hover,
+#battery:hover,
 #custom-notification:hover {
-  background-color: @surface;
-  color: @accent;
+  background-color: alpha(@accent, 0.22);
 }
 
-#custom-theme {
-  color: @accent2;
+/* Semantic per-module colors */
+#mpris {
+  color: @green;
+}
+
+#mpris.paused {
+  color: @fg_dim;
+}
+
+#idle_inhibitor {
+  color: @fg_dim;
+}
+
+#idle_inhibitor.activated {
+  background-color: alpha(@green, 0.2);
+  color: @green;
+  font-weight: 600;
+}
+
+#language {
+  color: @teal;
+  font-weight: 600;
 }
 
 #custom-clipboard {
   color: @cyan;
 }
 
+#custom-theme {
+  color: @accent2;
+}
+
+#pulseaudio {
+  color: @yellow;
+}
+
 #pulseaudio.muted {
   color: @fg_dim;
 }
 
+#network {
+  color: @cyan;
+}
+
 #network.disconnected {
   color: @urgent;
+}
+
+#bluetooth {
+  color: @accent;
+}
+
+#bluetooth.disabled,
+#bluetooth.off {
+  color: @fg_dim;
+}
+
+#cpu {
+  color: @accent2;
+}
+
+#memory {
+  color: @orange;
+}
+
+#battery {
+  color: @green;
 }
 
 #battery.charging,
@@ -139,12 +232,18 @@ tooltip {
   color: @urgent;
 }
 
+#custom-notification {
+  color: @pink;
+}
+
 #custom-power {
   margin-right: 6px;
+  background-color: alpha(@urgent, 0.2);
   color: @urgent;
+  font-weight: 600;
 }
 
 #custom-power:hover {
   background-color: @urgent;
-  color: @bg;
+  color: @dark_text;
 }

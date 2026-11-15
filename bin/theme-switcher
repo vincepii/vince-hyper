@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
+# ==============================================================================
 # Unified Theme Switcher for Hyprland, Waybar, Rofi, Kitty, SwayNC, Hyprpaper, GTK
+# ==============================================================================
+# Usage:
+#   theme-switcher                  # Open interactive Rofi menu
+#   theme-switcher "Tokyo Night"    # Apply specified theme and notify
+#   theme-switcher --restore        # Restore saved theme quietly at session start
+# ==============================================================================
+
 set -euo pipefail
 
 THEME_STATE="$HOME/.config/themes/current"
@@ -12,25 +20,49 @@ THEMES=(
     "Nord"
     "Rose Pine"
     "Everforest"
+    "Tokyo Night Day (Light)"
     "Catppuccin Latte (Light)"
     "Gruvbox Light"
     "Rose Pine Dawn (Light)"
+    "Everforest Light"
     "Solarized Light"
 )
 
+RESTORE_MODE=0
+CHOICE="${1:-}"
+
+if [[ "$CHOICE" == "--restore" ]]; then
+    RESTORE_MODE=1
+    if [[ -f "$THEME_STATE" ]]; then
+        CHOICE="$(cat "$THEME_STATE")"
+    else
+        CHOICE="Tokyo Night"
+    fi
+fi
+
 select_theme() {
     local current=""
-    [[ -f "$THEME_STATE" ]] && current=$(cat "$THEME_STATE")
-    printf '%s\n' "${THEMES[@]}" | rofi -dmenu -i -p "󰔎 Theme ($current)" -theme-str 'listview {lines: 10;}'
+    [[ -f "$THEME_STATE" ]] && current="$(cat "$THEME_STATE")"
+    local item
+    for item in "${THEMES[@]}"; do
+        if [[ "$item" == "$current" ]]; then
+            printf '✓ %s\n' "$item"
+        else
+            printf '  %s\n' "$item"
+        fi
+    done | rofi -dmenu -i -p "󰔎 Theme ($current)" -theme-str 'listview {lines: 12;}'
 }
 
-CHOICE="${1:-}"
 if [[ -z "$CHOICE" ]]; then
     if pkill -x rofi 2>/dev/null; then
         exit 0
     fi
-    CHOICE=$(select_theme || true)
+    CHOICE="$(select_theme || true)"
 fi
+
+# Strip leading checkmark or spaces from interactive Rofi selection
+CHOICE="${CHOICE#✓ }"
+CHOICE="${CHOICE#  }"
 
 [[ -z "$CHOICE" ]] && exit 0
 
@@ -41,6 +73,8 @@ case "$CHOICE" in
         IS_LIGHT=0
         BG="#1a1b26"
         BG_ALT="#24283b"
+        BG_RGBA="rgba(26, 27, 38, 0.90)"
+        BG_ALT_RGBA="rgba(36, 40, 59, 0.84)"
         SURFACE="#292e42"
         FG="#c0caf5"
         FG_DIM="#565f89"
@@ -50,6 +84,9 @@ case "$CHOICE" in
         GREEN="#9ece6a"
         YELLOW="#e0af68"
         CYAN="#7dcfff"
+        ORANGE="#ff9e64"
+        PINK="#bb9af7"
+        TEAL="#73daca"
         HYPR_ACTIVE="rgba(7aa2f7ee)"
         HYPR_ACTIVE2="rgba(bb9af7ee)"
         HYPR_INACTIVE="rgba(292e42aa)"
@@ -68,6 +105,8 @@ case "$CHOICE" in
         IS_LIGHT=0
         BG="#1e1e2e"
         BG_ALT="#181825"
+        BG_RGBA="rgba(30, 30, 46, 0.90)"
+        BG_ALT_RGBA="rgba(49, 50, 68, 0.84)"
         SURFACE="#313244"
         FG="#cdd6f4"
         FG_DIM="#6c7086"
@@ -77,6 +116,9 @@ case "$CHOICE" in
         GREEN="#a6e3a1"
         YELLOW="#f9e2af"
         CYAN="#89dceb"
+        ORANGE="#fab387"
+        PINK="#f5c2e7"
+        TEAL="#94e2d5"
         HYPR_ACTIVE="rgba(89b4faee)"
         HYPR_ACTIVE2="rgba(cba6f7ee)"
         HYPR_INACTIVE="rgba(313244aa)"
@@ -95,6 +137,8 @@ case "$CHOICE" in
         IS_LIGHT=0
         BG="#282828"
         BG_ALT="#1d2021"
+        BG_RGBA="rgba(40, 40, 40, 0.90)"
+        BG_ALT_RGBA="rgba(60, 56, 54, 0.84)"
         SURFACE="#3c3836"
         FG="#ebdbb2"
         FG_DIM="#928374"
@@ -104,6 +148,9 @@ case "$CHOICE" in
         GREEN="#b8bb26"
         YELLOW="#fabd2f"
         CYAN="#8ec07c"
+        ORANGE="#fe8019"
+        PINK="#d3869b"
+        TEAL="#8ec07c"
         HYPR_ACTIVE="rgba(d79921ee)"
         HYPR_ACTIVE2="rgba(fabd2fee)"
         HYPR_INACTIVE="rgba(3c3836aa)"
@@ -122,6 +169,8 @@ case "$CHOICE" in
         IS_LIGHT=0
         BG="#2e3440"
         BG_ALT="#242933"
+        BG_RGBA="rgba(46, 52, 64, 0.90)"
+        BG_ALT_RGBA="rgba(59, 66, 82, 0.84)"
         SURFACE="#3b4252"
         FG="#eceff4"
         FG_DIM="#616e88"
@@ -131,6 +180,9 @@ case "$CHOICE" in
         GREEN="#a3be8c"
         YELLOW="#ebcb8b"
         CYAN="#8fbcbb"
+        ORANGE="#d08770"
+        PINK="#b48ead"
+        TEAL="#8fbcbb"
         HYPR_ACTIVE="rgba(88c0d0ee)"
         HYPR_ACTIVE2="rgba(81a1c1ee)"
         HYPR_INACTIVE="rgba(3b4252aa)"
@@ -149,6 +201,8 @@ case "$CHOICE" in
         IS_LIGHT=0
         BG="#191724"
         BG_ALT="#1f1d2e"
+        BG_RGBA="rgba(25, 23, 36, 0.90)"
+        BG_ALT_RGBA="rgba(38, 35, 58, 0.84)"
         SURFACE="#26233a"
         FG="#e0def4"
         FG_DIM="#6e6a86"
@@ -158,6 +212,9 @@ case "$CHOICE" in
         GREEN="#31748f"
         YELLOW="#f6c177"
         CYAN="#9ccfd8"
+        ORANGE="#ea9a97"
+        PINK="#ebbcba"
+        TEAL="#9ccfd8"
         HYPR_ACTIVE="rgba(c4a7e7ee)"
         HYPR_ACTIVE2="rgba(ebbcbaee)"
         HYPR_INACTIVE="rgba(26233aaa)"
@@ -176,6 +233,8 @@ case "$CHOICE" in
         IS_LIGHT=0
         BG="#2d353b"
         BG_ALT="#232a2e"
+        BG_RGBA="rgba(45, 53, 59, 0.90)"
+        BG_ALT_RGBA="rgba(61, 72, 77, 0.84)"
         SURFACE="#3d484d"
         FG="#d3c6aa"
         FG_DIM="#859289"
@@ -185,6 +244,9 @@ case "$CHOICE" in
         GREEN="#a7c080"
         YELLOW="#dbbc7f"
         CYAN="#83c092"
+        ORANGE="#e69875"
+        PINK="#d699b6"
+        TEAL="#83c092"
         HYPR_ACTIVE="rgba(a7c080ee)"
         HYPR_ACTIVE2="rgba(7fbbb3ee)"
         HYPR_INACTIVE="rgba(3d484daa)"
@@ -197,12 +259,46 @@ case "$CHOICE" in
         C6="#83c092"; C14="#83c092"
         C7="#d3c6aa"; C15="#d3c6aa"
         ;;
+    "Tokyo Night Day (Light)"|"Tokyo Night Day"|tokyo-night-day)
+        NAME="Tokyo Night Day (Light)"
+        SLUG="tokyo-night-day"
+        IS_LIGHT=1
+        BG="#e1e2e7"
+        BG_ALT="#d0d5e3"
+        BG_RGBA="rgba(225, 226, 231, 0.92)"
+        BG_ALT_RGBA="rgba(208, 213, 227, 0.85)"
+        SURFACE="#c4c8da"
+        FG="#3760bf"
+        FG_DIM="#6172b0"
+        ACCENT="#2e7de9"
+        ACCENT2="#9854f1"
+        URGENT="#f52a65"
+        GREEN="#587539"
+        YELLOW="#8c6c3e"
+        CYAN="#007197"
+        ORANGE="#b15c00"
+        PINK="#9854f1"
+        TEAL="#118c74"
+        HYPR_ACTIVE="rgba(2e7de9ee)"
+        HYPR_ACTIVE2="rgba(9854f1ee)"
+        HYPR_INACTIVE="rgba(c4c8daaa)"
+        C0="#b4b5b9"; C8="#6172b0"
+        C1="#f52a65"; C9="#f52a65"
+        C2="#587539"; C10="#587539"
+        C3="#8c6c3e"; C11="#8c6c3e"
+        C4="#2e7de9"; C12="#2e7de9"
+        C5="#9854f1"; C13="#9854f1"
+        C6="#007197"; C14="#118c74"
+        C7="#3760bf"; C15="#3760bf"
+        ;;
     "Catppuccin Latte (Light)"|"Catppuccin Latte"|catppuccin-latte)
         NAME="Catppuccin Latte (Light)"
         SLUG="catppuccin-latte"
         IS_LIGHT=1
         BG="#eff1f5"
         BG_ALT="#e6e9ef"
+        BG_RGBA="rgba(239, 241, 245, 0.92)"
+        BG_ALT_RGBA="rgba(220, 224, 232, 0.85)"
         SURFACE="#ccd0da"
         FG="#4c4f69"
         FG_DIM="#8c8fa1"
@@ -212,6 +308,9 @@ case "$CHOICE" in
         GREEN="#40a02b"
         YELLOW="#df8e1d"
         CYAN="#04a5e5"
+        ORANGE="#fe640b"
+        PINK="#ea76cb"
+        TEAL="#179299"
         HYPR_ACTIVE="rgba(1e66f5ee)"
         HYPR_ACTIVE2="rgba(8839efee)"
         HYPR_INACTIVE="rgba(ccd0daaa)"
@@ -230,6 +329,8 @@ case "$CHOICE" in
         IS_LIGHT=1
         BG="#fbf1c7"
         BG_ALT="#f2e5bc"
+        BG_RGBA="rgba(251, 241, 199, 0.92)"
+        BG_ALT_RGBA="rgba(235, 219, 178, 0.85)"
         SURFACE="#ebdbb2"
         FG="#3c3836"
         FG_DIM="#7c6f64"
@@ -239,6 +340,9 @@ case "$CHOICE" in
         GREEN="#79740e"
         YELLOW="#b57614"
         CYAN="#427b58"
+        ORANGE="#af3a03"
+        PINK="#8f3f71"
+        TEAL="#427b58"
         HYPR_ACTIVE="rgba(b57614ee)"
         HYPR_ACTIVE2="rgba(076678ee)"
         HYPR_INACTIVE="rgba(d5c4a1aa)"
@@ -257,6 +361,8 @@ case "$CHOICE" in
         IS_LIGHT=1
         BG="#faf4ed"
         BG_ALT="#fffaf3"
+        BG_RGBA="rgba(250, 244, 237, 0.92)"
+        BG_ALT_RGBA="rgba(242, 233, 225, 0.85)"
         SURFACE="#f2e9e1"
         FG="#575279"
         FG_DIM="#9893a5"
@@ -266,6 +372,9 @@ case "$CHOICE" in
         GREEN="#286983"
         YELLOW="#ea9d34"
         CYAN="#56949f"
+        ORANGE="#ea9d34"
+        PINK="#d7827e"
+        TEAL="#56949f"
         HYPR_ACTIVE="rgba(907aa9ee)"
         HYPR_ACTIVE2="rgba(d7827eee)"
         HYPR_INACTIVE="rgba(dfdad9aa)"
@@ -278,12 +387,46 @@ case "$CHOICE" in
         C6="#d7827e"; C14="#d7827e"
         C7="#575279"; C15="#575279"
         ;;
+    "Everforest Light"|everforest-light)
+        NAME="Everforest Light"
+        SLUG="everforest-light"
+        IS_LIGHT=1
+        BG="#fdf6e3"
+        BG_ALT="#f4f0d9"
+        BG_RGBA="rgba(253, 246, 227, 0.92)"
+        BG_ALT_RGBA="rgba(239, 235, 212, 0.85)"
+        SURFACE="#efebd4"
+        FG="#5c6a72"
+        FG_DIM="#829181"
+        ACCENT="#8da101"
+        ACCENT2="#3a94c5"
+        URGENT="#f85552"
+        GREEN="#8da101"
+        YELLOW="#dfa000"
+        CYAN="#35a77c"
+        ORANGE="#f57d26"
+        PINK="#df69ba"
+        TEAL="#35a77c"
+        HYPR_ACTIVE="rgba(8da101ee)"
+        HYPR_ACTIVE2="rgba(3a94c5ee)"
+        HYPR_INACTIVE="rgba(efebd4aa)"
+        C0="#efebd4"; C8="#829181"
+        C1="#f85552"; C9="#f85552"
+        C2="#8da101"; C10="#8da101"
+        C3="#dfa000"; C11="#dfa000"
+        C4="#3a94c5"; C12="#3a94c5"
+        C5="#df69ba"; C13="#df69ba"
+        C6="#35a77c"; C14="#35a77c"
+        C7="#5c6a72"; C15="#5c6a72"
+        ;;
     "Solarized Light"|solarized-light)
         NAME="Solarized Light"
         SLUG="solarized-light"
         IS_LIGHT=1
         BG="#fdf6e3"
         BG_ALT="#eee8d5"
+        BG_RGBA="rgba(253, 246, 227, 0.92)"
+        BG_ALT_RGBA="rgba(238, 232, 213, 0.85)"
         SURFACE="#e4decb"
         FG="#586e75"
         FG_DIM="#93a1a1"
@@ -293,6 +436,9 @@ case "$CHOICE" in
         GREEN="#859900"
         YELLOW="#b58900"
         CYAN="#2aa198"
+        ORANGE="#cb4b16"
+        PINK="#d33682"
+        TEAL="#2aa198"
         HYPR_ACTIVE="rgba(268bd2ee)"
         HYPR_ACTIVE2="rgba(2aa198ee)"
         HYPR_INACTIVE="rgba(eee8d5aa)"
@@ -310,6 +456,15 @@ case "$CHOICE" in
         exit 1
         ;;
 esac
+
+mkdir -p "$HOME/.config/themes" \
+         "$HOME/.config/hypr" \
+         "$HOME/.config/waybar" \
+         "$HOME/.config/rofi" \
+         "$HOME/.config/kitty" \
+         "$HOME/.config/swaync" \
+         "$HOME/.config/gtk-3.0" \
+         "$HOME/.config/gtk-4.0"
 
 echo "$NAME" > "$THEME_STATE"
 
@@ -332,6 +487,8 @@ cat > "$HOME/.config/waybar/colors.css" <<EOF
 /* Auto-generated by theme-switcher ($NAME) */
 @define-color bg $BG;
 @define-color bg_alt $BG_ALT;
+@define-color bg_bar $BG_RGBA;
+@define-color bg_pill $BG_ALT_RGBA;
 @define-color surface $SURFACE;
 @define-color fg $FG;
 @define-color fg_dim $FG_DIM;
@@ -341,6 +498,10 @@ cat > "$HOME/.config/waybar/colors.css" <<EOF
 @define-color green $GREEN;
 @define-color yellow $YELLOW;
 @define-color cyan $CYAN;
+@define-color orange $ORANGE;
+@define-color pink $PINK;
+@define-color teal $TEAL;
+@define-color dark_text $BG;
 EOF
 
 # 3. Rofi Theme Colors (~/.config/rofi/colors.rasi)
@@ -398,11 +559,21 @@ cat > "$HOME/.config/swaync/colors.css" <<EOF
 /* Auto-generated by theme-switcher ($NAME) */
 @define-color bg $BG;
 @define-color bg_alt $BG_ALT;
+@define-color bg_bar $BG_RGBA;
+@define-color bg_pill $BG_ALT_RGBA;
 @define-color surface $SURFACE;
 @define-color fg $FG;
 @define-color fg_dim $FG_DIM;
 @define-color accent $ACCENT;
+@define-color accent2 $ACCENT2;
 @define-color urgent $URGENT;
+@define-color green $GREEN;
+@define-color yellow $YELLOW;
+@define-color cyan $CYAN;
+@define-color orange $ORANGE;
+@define-color pink $PINK;
+@define-color teal $TEAL;
+@define-color dark_text $BG;
 EOF
 
 # 6. Hyprpaper Config (~/.config/hypr/hyprpaper.conf) — uses Hyprpaper v0.8+ block syntax
@@ -421,13 +592,45 @@ wallpaper {
 splash = false
 EOF
 
-# 7. Sync GTK / Desktop Dark vs Light preference
+# 7. Sync GTK 3/4, Icon Theme (Papirus), Font Antialiasing, and Desktop Color Scheme
+if [[ "$IS_LIGHT" -eq 1 ]]; then
+    COLOR_SCHEME="prefer-light"
+    GTK_THEME="Adwaita"
+    ICON_THEME="Papirus-Light"
+    GTK_DARK=0
+else
+    COLOR_SCHEME="prefer-dark"
+    GTK_THEME="Adwaita-dark"
+    ICON_THEME="Papirus-Dark"
+    GTK_DARK=1
+fi
+
 if command -v gsettings >/dev/null 2>&1; then
-    if [[ "$IS_LIGHT" -eq 1 ]]; then
-        gsettings set org.gnome.desktop.interface color-scheme 'prefer-light' 2>/dev/null || true
-    else
-        gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
-    fi
+    gsettings set org.gnome.desktop.interface color-scheme "$COLOR_SCHEME" 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface gtk-theme "$GTK_THEME" 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME" 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface font-name 'Noto Sans 11' 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface monospace-font-name 'JetBrainsMono Nerd Font 11' 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface font-antialiasing 'grayscale' 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface font-hinting 'none' 2>/dev/null || true
+fi
+
+for gtk_dir in "$HOME/.config/gtk-3.0" "$HOME/.config/gtk-4.0"; do
+    cat > "$gtk_dir/settings.ini" <<EOF
+[Settings]
+gtk-application-prefer-dark-theme=$GTK_DARK
+gtk-theme-name=$GTK_THEME
+gtk-icon-theme-name=$ICON_THEME
+gtk-font-name=Noto Sans 11
+gtk-xft-antialias=1
+gtk-xft-hinting=0
+gtk-xft-hintstyle=hintnone
+gtk-xft-rgba=none
+EOF
+done
+
+if [[ -f "$HOME/.config/rofi/config.rasi" ]]; then
+    sed -i "s|icon-theme:.*;|icon-theme:                 \"$ICON_THEME\";|" "$HOME/.config/rofi/config.rasi" 2>/dev/null || true
 fi
 
 # 8. Reload live components if running
@@ -443,13 +646,13 @@ if pgrep -x swaync >/dev/null 2>&1; then
     swaync-client -rs 2>/dev/null || true
 fi
 
-if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
+if [[ "$RESTORE_MODE" -eq 0 && -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
     hyprctl reload >/dev/null 2>&1 || true
     pkill -x hyprpaper 2>/dev/null || true
     nohup hyprpaper >/dev/null 2>&1 &
     disown
 fi
 
-if command -v notify-send >/dev/null 2>&1 && [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
+if [[ "$RESTORE_MODE" -eq 0 ]] && command -v notify-send >/dev/null 2>&1 && [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
     notify-send -a "Theme Switcher" -i preferences-desktop-theme "Theme Applied" "$NAME" || true
 fi
