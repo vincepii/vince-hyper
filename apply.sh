@@ -47,6 +47,7 @@ REQUIRED_PKGS=(
     btop
     jq
     python
+    qt6ct
     xorg-xrdb
     papirus-icon-theme
     greetd
@@ -113,6 +114,9 @@ PYEOF
     cp -a "$HOME/.config/swaync/config.json" \
           "$HOME/.config/swaync/style.css" \
           "$REPO_DIR/config/swaync/"
+
+    mkdir -p "$REPO_DIR/config/swayosd"
+    [[ -f "$HOME/.config/swayosd/style.css" ]] && cp -a "$HOME/.config/swayosd/style.css" "$REPO_DIR/config/swayosd/"
 
     mkdir -p "$REPO_DIR/config/fontconfig"
     [[ -f "$HOME/.config/fontconfig/fonts.conf" ]] && cp -a "$HOME/.config/fontconfig/fonts.conf" "$REPO_DIR/config/fontconfig/"
@@ -251,7 +255,7 @@ fi
 TIMESTAMP="$(date +'%Y%m%d-%H%M%S')"
 BACKUP_DIR="$HOME/.cache/vince-hyper-backup-$TIMESTAMP"
 mkdir -p "$BACKUP_DIR"
-for dir in hypr waybar rofi kitty swaync fontconfig themes uwsm; do
+for dir in hypr waybar rofi kitty swaync swayosd fontconfig themes uwsm; do
     if [[ -d "$HOME/.config/$dir" ]]; then
         cp -a "$HOME/.config/$dir" "$BACKUP_DIR/"
     fi
@@ -264,6 +268,7 @@ mkdir -p "$HOME/.config/hypr" \
          "$HOME/.config/rofi" \
          "$HOME/.config/kitty" \
          "$HOME/.config/swaync" \
+         "$HOME/.config/swayosd" \
          "$HOME/.config/fontconfig" \
          "$HOME/.config/themes" \
          "$HOME/.config/uwsm" \
@@ -278,6 +283,7 @@ cp -a "$REPO_DIR/config/waybar/"*     "$HOME/.config/waybar/"
 cp -a "$REPO_DIR/config/rofi/"*       "$HOME/.config/rofi/"
 cp -a "$REPO_DIR/config/kitty/"*      "$HOME/.config/kitty/"
 cp -a "$REPO_DIR/config/swaync/"*     "$HOME/.config/swaync/"
+cp -a "$REPO_DIR/config/swayosd/"*    "$HOME/.config/swayosd/"
 cp -a "$REPO_DIR/config/fontconfig/"* "$HOME/.config/fontconfig/"
 cp -a "$REPO_DIR/config/uwsm/"*       "$HOME/.config/uwsm/"
 cp -a "$REPO_DIR/config/mimeapps.list" "$HOME/.config/mimeapps.list"
@@ -317,11 +323,19 @@ FISHEOF
     fi
 fi
 
-# 8. Refresh font cache & start SwayOSD if running inside Hyprland
+# 8. Refresh font cache & reload SwayNC config / Hypridle when running
 fc-cache -f >/dev/null 2>&1 || true
-if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]] && command -v swayosd-server >/dev/null 2>&1; then
-    if ! pgrep -x swayosd-server >/dev/null 2>&1; then
+if pgrep -x swaync >/dev/null 2>&1 && command -v swaync-client >/dev/null 2>&1; then
+    swaync-client -R >/dev/null 2>&1 || true
+fi
+if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
+    if command -v swayosd-server >/dev/null 2>&1 && ! pgrep -x swayosd-server >/dev/null 2>&1; then
         nohup swayosd-server >/dev/null 2>&1 &
+        disown
+    fi
+    if command -v hypridle >/dev/null 2>&1 && pgrep -x hypridle >/dev/null 2>&1; then
+        pkill -x hypridle 2>/dev/null || true
+        nohup hypridle >/dev/null 2>&1 &
         disown
     fi
 fi

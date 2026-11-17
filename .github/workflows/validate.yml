@@ -1,0 +1,30 @@
+name: Validate Configs & Scripts
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Bash syntax (apply.sh & bin/*)
+        run: bash -n apply.sh bin/*
+
+      - name: Validate JSON configurations (Waybar & SwayNC)
+        run: |
+          jq empty config/waybar/config.jsonc
+          jq empty config/swaync/config.json
+
+      - name: Validate Fontconfig XML
+        run: python3 -c 'import xml.etree.ElementTree as ET; ET.parse("config/fontconfig/fonts.conf")'
+
+      - name: Ensure zero hardcoded /home/ paths
+        run: |
+          if grep -rnI "/home/" apply.sh bin/ config/ README.md; then
+            echo "Error: hardcoded /home/ path detected!"
+            exit 1
+          fi

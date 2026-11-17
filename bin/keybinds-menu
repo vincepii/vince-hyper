@@ -10,8 +10,8 @@ cat << 'EOF' | rofi -dmenu -no-sidebar-mode -i -p "󰌌 Keybinds" -theme-str 'wi
 Super (Tap) / Super + D / Space │ App Launcher (Rofi: Apps / Windows / Command / Calc)
 Super + Tab / Alt + Tab         │ Window Switcher (Rofi) / Cycle Next Window
 Super + =                       │ Inline Calculator (Rofi + qalc, auto-copies result)
-Super + .                       │ Emoji Picker (rofimoji -> Clipboard)
-Super + V                       │ Clipboard History (Rofi + cliphist)
+Super + .                       │ Emoji Picker (rofimoji -> Type + Copy to Clipboard)
+Super + V                       │ Clipboard History (Rofi + cliphist -> Copy)
 Super + Return                  │ Terminal (Kitty)
 Super + B                       │ Browser (Google Chrome)
 Super + E                       │ File Manager (Nautilus)

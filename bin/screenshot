@@ -6,16 +6,37 @@ DIR="$HOME/Pictures/Screenshots"
 mkdir -p "$DIR"
 FILE="$DIR/screenshot-$(date +'%Y%m%d-%H%M%S').png"
 
+# Read active theme's accent & background hex colors for slurp selection border
+ACCENT_HEX="7aa2f7"
+BG_HEX="1a1b26"
+if [[ -f "$HOME/.config/hypr/theme.lua" ]]; then
+    PARSED="$(python3 - "$HOME/.config/hypr/theme.lua" << 'PYEOF' 2>/dev/null || true
+import re, sys
+txt = open(sys.argv[1], encoding="utf-8").read()
+acc = re.search(r'accent\s*=\s*"#([0-9a-fA-F]{6})"', txt)
+bg  = re.search(r'bg\s*=\s*"#([0-9a-fA-F]{6})"', txt)
+print(f"{acc.group(1) if acc else '7aa2f7'} {bg.group(1) if bg else '1a1b26'}")
+PYEOF
+)"
+    if [[ -n "$PARSED" ]]; then
+        read -r ACCENT_HEX BG_HEX <<< "$PARSED"
+    fi
+fi
+
+select_region() {
+    slurp -w 2 -c "${ACCENT_HEX}ff" -b "${BG_HEX}55" 2>/dev/null
+}
+
 MODE="${1:-region}"
 
 case "$MODE" in
     region)
-        GEOM=$(slurp 2>/dev/null) || exit 0
+        GEOM=$(select_region) || exit 0
         [[ -z "$GEOM" ]] && exit 0
         grim -g "$GEOM" "$FILE"
         ;;
     edit|region-edit)
-        GEOM=$(slurp 2>/dev/null) || exit 0
+        GEOM=$(select_region) || exit 0
         [[ -z "$GEOM" ]] && exit 0
         if command -v satty >/dev/null 2>&1; then
             grim -g "$GEOM" - | satty --filename - \
@@ -52,4 +73,17 @@ case "$MODE" in
 esac
 
 wl-copy < "$FILE"
-notify-send -a "Screenshot" -i "$FILE" "Screenshot Captured" "Copied to clipboard & saved to:\n$(basename "$FILE")"
+
+if command -v notify-send >/dev/null 2>&1; then
+    if command -v satty >/dev/null 2>&1; then
+        (
+            ACTION="$(notify-send -a "Screenshot" -i "$FILE" --action="edit=Annotate" \
+                "Screenshot Captured" "Copied to clipboard & saved to:\n$(basename "$FILE")" 2>/dev/null || true)"
+            if [[ "$ACTION" == "edit" ]]; then
+                satty --filename "$FILE" --output-filename "$FILE" --early-exit --copy-command "wl-copy"
+            fi
+        ) >/dev/null 2>&1 &
+    else
+        notify-send -a "Screenshot" -i "$FILE" "Screenshot Captured" "Copied to clipboard & saved to:\n$(basename "$FILE")" || true
+    fi
+fi

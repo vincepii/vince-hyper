@@ -11,10 +11,10 @@ A clean aesthetic with a high-contrast floating pill-based Waybar, a multi-tab R
 1. **Zero Bloat / No Gimmicks**: No custom Quickshell/AGS/Astal daemons, no audio visualizer bars, no docks, no anime wallpapers. Just a crisp floating pill top panel and fast keyboard-driven workflows.
 2. **Standardized Sway / i3 / Vim Ergonomics**: `Super + H/J/K/L` focuses windows (`Left/Down/Up/Right`, stopping cleanly at screen edges), `Super + Shift + H/J/K/L` moves windows, `Super + Ctrl + H/J/K/L` resizes windows, and `Super + W` manages tabbed window groups (`Super + Alt + H/L` to switch tabs, `Super + Shift + W` to pop out).
 3. **Multi-Tab Rofi Launcher**: Launching Rofi (`Super`, `Super + D`, `Super + Tab`, or `Super + =`) displays a unified bottom mode-switcher bar (`Apps`, `Windows`, `Command`, `Calc`) switchable via mouse click or `Ctrl + Tab` / `Shift + Left/Right`, while single-purpose `-dmenu` menus stay compact and tab-free.
-4. **Unified 12-Palette Theme Switcher**: One script (`theme-switcher`) simultaneously updates **Hyprland borders & tabbed groupbars**, **Hyprlock**, **Waybar floating pills & interactive Pango calendar pop-over**, **Rofi**, **Kitty**, **SwayNC** (including `:root` variables for crisp light-theme action buttons), **GTK 3/4 themes (`Adwaita-dark` / `Adwaita`)**, **Papirus icons (`Papirus-Dark` / `Papirus-Light`)**, and **Hyprpaper** wallpapers across 12 palettes (6 dark + 6 light):
+4. **Unified 12-Palette Theme Switcher**: One script (`theme-switcher`) simultaneously updates **Hyprland borders & tabbed groupbars**, **Hyprlock** (with live desktop screenshot blur), **Waybar floating pills & interactive Pango calendar pop-over**, **Rofi**, **Kitty**, **SwayNC** (including `:root` variables for crisp light-theme action buttons), **SwayOSD**, **GTK 3/4 (`Adwaita-dark` / `Adwaita`)**, **Qt6 (`qt6ct`)**, **Papirus icons (`Papirus-Dark` / `Papirus-Light`)**, and **Hyprpaper** wallpapers across 12 palettes (6 dark + 6 light):
    - **Dark**: **Tokyo Night** *(default)*, **Catppuccin Mocha**, **Gruvbox Dark**, **Nord**, **Rosé Pine**, **Everforest**
    - **Light**: **Tokyo Night Day (Light)**, **Catppuccin Latte (Light)**, **Gruvbox Light**, **Rose Pine Dawn (Light)**, **Everforest Light**, **Solarized Light**
-5. **Smart Gaps + Native Maximized-Window Indicator**: Single tiled windows automatically expand edge-to-edge without borders (`w[tv1]` / `f[1]`), while Waybar's built-in `hyprland/windowcount` pill (`󰊓 N`) appears whenever a window is maximized (`Super + M`)—highlighted in `@orange` when other tiled windows are hidden underneath—with left-click to unmaximize and right-click to switch hidden windows.
+5. **Rounded Window Aesthetics + Native Maximized-Window Indicator**: Every tiled window—even when solo on a workspace—retains crisp rounded corners, breathing gaps, subtle drop shadows, and dual-pass frosted blur, while Waybar's built-in `hyprland/windowcount` pill (`󰊓 N`) appears whenever a window is maximized (`Super + M`)—highlighted in `@orange` when other tiled windows are hidden underneath—with left-click to unmaximize and right-click to switch hidden windows.
 6. **Fractional Scaling (`1.25x`) & Compositor Efficiency**: Tuned fontconfig (`hintnone`, grayscale AA, no stem darkening) and `Xft.dpi: 120` for razor-sharp rendering at `1.25x` scale, VFR + direct scanout for minimal GPU usage, automatic idle inhibition during fullscreen apps and tiled browser video calls, and multi-device synchronized `US` <-> `IT` keyboard layout switching with SwayOSD feedback.
 
 ---
@@ -57,6 +57,9 @@ vince-hyper/
     │   ├── config.json          # Notification daemon & control center config
     │   ├── style.css            # High-contrast notification & button styling (imports colors.css)
     │   └── colors.css           # Auto-generated :root & @define-color palette variables
+    ├── swayosd/
+    │   ├── style.css            # Theme-aware OSD pill styling (imports colors.css)
+    │   └── colors.css           # Auto-generated OSD palette variables
     ├── fontconfig/
     │   └── fonts.conf           # Fontconfig tuned for 1.25x fractional scaling (hintnone, grayscale AA)
     ├── themes/
@@ -82,7 +85,7 @@ cd ~/src/vincepii/vince-hyper
 3. Backs up your existing `~/.config` directories to `~/.cache/vince-hyper-backup-<timestamp>`.
 4. Deploys all configurations and scripts, generates the gradient wallpapers, and **preserves your currently active theme** (defaulting to **Tokyo Night** only on a brand-new installation).
 
-*(Note: Google Chrome is launched via `flatpak run com.google.Chrome` by default. If you use native Chrome or another browser, update `local browser` in `config/hypr/hyprland.lua`.)*
+*(Note: Google Chrome is launched via `flatpak run com.google.Chrome` by default. If you use native Chrome or another browser, update `local browser` in `config/hypr/hyprland.lua`. For machine-specific multi-monitor layouts or scaling, create an untracked `~/.config/hypr/monitors.lua`—`hyprland.lua` loads it automatically via `pcall(require, "monitors")` without touching `git status`.)*
 
 ### 2. Saving Local Tweaks Back to the Repo
 If you edit files directly in `~/.config/` or `~/.local/bin/` and want to commit them back to this repository:
@@ -101,8 +104,8 @@ git diff
 | **`Super + D`** / **`Super + Space`** | App Launcher (`rofi -show drun`) |
 | **`Super + Tab`** / **`Alt + Tab`** | Window Switcher (`rofi -show window`) / Cycle next window |
 | **`Super + =`** | Inline Calculator (`rofi -show calc`, auto-copies result to clipboard) |
-| **`Super + .`** | Emoji Picker (`rofimoji` -> copies emoji to clipboard) |
-| **`Super + V`** | Clipboard History (`cliphist` + Rofi) |
+| **`Super + .`** | Emoji Picker (`rofimoji` -> types into active window + copies to clipboard) |
+| **`Super + V`** | Clipboard History (`cliphist` + Rofi -> copies selection to clipboard) |
 | **`Super + Return`** | Terminal (`kitty`) |
 | **`Super + B`** | Browser (`Google Chrome`) |
 | **`Super + E`** | File Manager (`nautilus`) |

@@ -2,7 +2,7 @@
 :root {
   --cc-bg: rgba(22, 22, 30, 0.88);
   --noti-border-color: #7aa2f7;
-  --noti-bg: 41, 46, 66;
+  --noti-bg: 26, 27, 38;
   --noti-bg-alpha: 0.96;
   --noti-bg-darker: #1a1b26;
   --noti-bg-hover: rgba(122, 162, 247, 0.14);
@@ -12,12 +12,15 @@
   --text-color: #c0caf5;
   --text-color-disabled: #565f89;
   --bg-selected: #7aa2f7;
+  --notification-icon-size: 36px;
+  --font-size-summary: 13.5px;
+  --font-size-body: 12.5px;
 }
 
 @define-color cc-bg rgba(22, 22, 30, 0.88);
 @define-color noti-border-color #7aa2f7;
-@define-color noti-bg rgba(41, 46, 66, 0.96);
-@define-color noti-bg-opaque #292e42;
+@define-color noti-bg rgba(26, 27, 38, 0.96);
+@define-color noti-bg-opaque #1a1b26;
 @define-color noti-bg-darker #1a1b26;
 @define-color noti-bg-hover rgba(122, 162, 247, 0.14);
 @define-color noti-bg-hover-opaque #292e42;

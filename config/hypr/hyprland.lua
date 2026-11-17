@@ -25,19 +25,23 @@ local groupbarTextInact   = theme.groupbar_text_inactive or "rgba(c0caf5ff)"
 ------------------
 ---- MONITORS ----
 ------------------
-hl.monitor({
-    output   = "DP-1",
-    mode     = "highrr",
-    position = "0x0",
-    scale    = 1.25,
-})
+-- Optional per-machine override in ~/.config/hypr/monitors.lua (untracked, untouched by apply.sh)
+local hasLocalMonitors = pcall(require, "monitors")
+if not hasLocalMonitors then
+    hl.monitor({
+        output   = "DP-1",
+        mode     = "highrr",
+        position = "0x0",
+        scale    = 1.25,
+    })
 
-hl.monitor({
-    output   = "",
-    mode     = "preferred",
-    position = "auto",
-    scale    = "auto",
-})
+    hl.monitor({
+        output   = "",
+        mode     = "preferred",
+        position = "auto",
+        scale    = "auto",
+    })
+end
 
 ---------------------
 ---- MY PROGRAMS ----
@@ -48,7 +52,7 @@ local browser      = "flatpak run com.google.Chrome"
 local launcher     = "rofi -show drun"
 local windowMenu   = "rofi -show window"
 local calcMenu     = "rofi -show calc"
-local emojiMenu    = "rofimoji --selector rofi --action copy"
+local emojiMenu    = "rofimoji --selector rofi --action type copy"
 local clipMenu     = home .. "/.local/bin/clipboard-menu"
 local themeMenu    = home .. "/.local/bin/theme-switcher"
 local wallMenu     = home .. "/.local/bin/wallpaper-switcher"
@@ -143,7 +147,7 @@ hl.config({
         inactive_opacity = 1.0,
 
         shadow = {
-            enabled      = false,
+            enabled      = true,
             range        = 16,
             render_power = 3,
             color        = "rgba(00000066)",
@@ -152,8 +156,8 @@ hl.config({
         blur = {
             enabled           = true,
             size              = 4,
-            passes            = 1,
-            xray              = true,
+            passes            = 2,
+            xray              = false,
             new_optimizations = true,
             vibrancy          = 0.1696,
         },
@@ -206,26 +210,10 @@ hl.config({
     },
 })
 
--- Persistent workspaces 1..5 on DP-1 (so they are always visible & clickable in Waybar)
+-- Persistent workspaces 1..5 (portable across any monitor connector: DP-1, eDP-1, HDMI-A-1)
 for i = 1, 5 do
-    hl.workspace_rule({ workspace = tostring(i), monitor = "DP-1", persistent = true })
+    hl.workspace_rule({ workspace = tostring(i), persistent = true })
 end
-
--- Smart Gaps: maximize screen space (no gaps, no border, no rounding) when only 1 tiled window is visible
-hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
-hl.workspace_rule({ workspace = "f[1]",   gaps_out = 0, gaps_in = 0 })
-hl.window_rule({
-    name        = "no-gaps-wtv1",
-    match       = { float = false, workspace = "w[tv1]" },
-    border_size = 0,
-    rounding    = 0,
-})
-hl.window_rule({
-    name        = "no-gaps-f1",
-    match       = { float = false, workspace = "f[1]" },
-    border_size = 0,
-    rounding    = 0,
-})
 
 --------------------
 ---- ANIMATIONS ----
@@ -498,4 +486,23 @@ local floatTitles = {
 }
 for _, ttl in ipairs(floatTitles) do
     hl.window_rule({ match = { title = ttl }, float = true })
+end
+
+---------------------
+---- LAYER RULES ----
+---------------------
+-- Frosted-glass compositor blur behind translucent Waybar, Rofi, SwayNC, and SwayOSD surfaces
+local blurLayers = {
+    "^(waybar)$",
+    "^(rofi)$",
+    "^(swaync-control-center)$",
+    "^(swaync-notification-window)$",
+    "^(swayosd)$",
+}
+for _, ns in ipairs(blurLayers) do
+    hl.layer_rule({
+        match        = { namespace = ns },
+        blur         = true,
+        ignore_alpha = 0.5,
+    })
 end

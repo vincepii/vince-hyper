@@ -10,18 +10,39 @@
   outline: none;
 }
 
+.notification-row .notification-background {
+  padding: 4px 8px;
+}
+
+/* Floating popup toast notifications: crisp theme @bg with 2px @accent border */
 .notification,
-.notification-row .notification-background .notification {
-  background: @surface;
+.floating-notifications .notification-row .notification-background .notification {
+  background: @bg;
+  background-color: @bg;
   color: @fg;
-  border: 1px solid @accent;
+  border: 2px solid @accent;
   border-radius: 10px;
-  margin: 6px;
-  padding: 10px;
+  margin: 0;
+  padding: 8px 10px;
+  box-shadow: none;
+}
+
+/* Notifications inside Control Center: elevated @bg_pill cards against @bg_bar panel */
+.control-center .control-center-list .notification-row .notification-background .notification {
+  background: @bg_pill;
+  background-color: @bg_pill;
+  color: @fg;
+  border: 1px solid alpha(@accent, 0.45);
+  border-radius: 10px;
+  margin: 0;
+  padding: 8px 10px;
+  box-shadow: none;
 }
 
 .notification.critical,
-.notification-row .notification-background .notification.critical {
+.notification-row .notification-background .notification.critical,
+.floating-notifications .notification-row .notification-background .notification.critical,
+.control-center .control-center-list .notification-row .notification-background .notification.critical {
   border: 2px solid @urgent;
 }
 
@@ -30,10 +51,16 @@
   background: transparent;
 }
 
+.notification-row .notification-background .notification .notification-default-action .notification-content .image {
+  margin: 2px 8px 2px 2px;
+  border-radius: 8px;
+}
+
 /* Match /etc/xdg/swaync/style.css 7-class selector specificity so light themes never fall back to white */
 .summary,
 .notification-row .notification-background .notification .notification-default-action .notification-content .text-box .summary {
-  color: @fg;
+  color: @accent;
+  font-size: 13.5px;
   font-weight: 700;
   text-shadow: none;
 }
@@ -49,6 +76,7 @@
 .body,
 .notification-row .notification-background .notification .notification-default-action .notification-content .text-box .body {
   color: @fg;
+  font-size: 12.5px;
   font-weight: 400;
   text-shadow: none;
 }
@@ -61,8 +89,8 @@
   color: @fg;
   border: none;
   border-radius: 100%;
-  min-width: 24px;
-  min-height: 24px;
+  min-width: 22px;
+  min-height: 22px;
 }
 
 .close-button:hover {
@@ -93,7 +121,7 @@ button.notification-action,
   color: @fg;
   border: 1px solid @accent;
   border-radius: 8px;
-  padding: 5px 12px;
+  padding: 4px 10px;
   font-weight: 600;
 }
 
@@ -159,9 +187,9 @@ button.notification-action:hover label,
 }
 
 .widget-dnd {
-  background: @surface;
+  background: @bg_pill;
   color: @fg;
-  border: 1px solid alpha(@accent, 0.25);
+  border: 1px solid alpha(@accent, 0.35);
   border-radius: 8px;
   padding: 8px 12px;
   margin-bottom: 10px;
