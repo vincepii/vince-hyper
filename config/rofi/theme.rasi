@@ -12,7 +12,7 @@ window {
     location:                   center;
     anchor:                     center;
     width:                      560px;
-    background-color:           @bg;
+    background-color:           @bg-bar;
     border:                     2px solid;
     border-color:               @accent;
     border-radius:              10px;
@@ -59,7 +59,7 @@ textbox {
 listview {
     lines:                      9;
     columns:                    1;
-    fixed-height:               false;
+    fixed-height:               true;
     scrollbar:                  false;
     spacing:                    4px;
     padding:                    4px 0px 0px 0px;

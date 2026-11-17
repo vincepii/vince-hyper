@@ -5,6 +5,7 @@ text/html=com.google.Chrome.desktop;
 x-scheme-handler/http=com.google.Chrome.desktop;
 x-scheme-handler/https=com.google.Chrome.desktop;
 inode/directory=org.gnome.Nautilus.desktop;
+x-scheme-handler/opencode=ai.opencode.desktop.desktop;
 
 [Default Applications]
 inode/directory=org.gnome.Nautilus.desktop
@@ -14,3 +15,4 @@ x-scheme-handler/https=com.google.Chrome.desktop
 x-scheme-handler/antigravity=antigravity.desktop
 application/xhtml+xml=com.google.Chrome.desktop
 text/html=com.google.Chrome.desktop
+x-scheme-handler/opencode=ai.opencode.desktop.desktop

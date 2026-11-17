@@ -591,6 +591,8 @@ cat > "$HOME/.config/rofi/colors.rasi" <<EOF
 * {
     bg:        $BG;
     bg-alt:    $BG_ALT;
+    bg-bar:    $BG_RGBA;
+    bg-pill:   $BG_ALT_RGBA;
     surface:   $SURFACE;
     fg:        $FG;
     fg-dim:    $FG_DIM;

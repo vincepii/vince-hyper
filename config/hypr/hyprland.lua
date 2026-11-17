@@ -491,10 +491,17 @@ end
 ---------------------
 ---- LAYER RULES ----
 ---------------------
--- Frosted-glass compositor blur behind translucent Waybar, Rofi, SwayNC, and SwayOSD surfaces
+-- Frosted-glass blur behind Rofi (no_anim + fixed-height keeps typing 100% fluid)
+hl.layer_rule({
+    match        = { namespace = "^(rofi)$" },
+    blur         = true,
+    ignore_alpha = 0.5,
+    no_anim      = true,
+})
+
+-- Frosted-glass compositor blur behind translucent Waybar, SwayNC, and SwayOSD surfaces
 local blurLayers = {
     "^(waybar)$",
-    "^(rofi)$",
     "^(swaync-control-center)$",
     "^(swaync-notification-window)$",
     "^(swayosd)$",

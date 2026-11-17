@@ -2,6 +2,8 @@
 * {
     bg:        #1a1b26;
     bg-alt:    #24283b;
+    bg-bar:    rgba(22, 22, 30, 0.88);
+    bg-pill:   rgba(47, 53, 73, 0.92);
     surface:   #292e42;
     fg:        #c0caf5;
     fg-dim:    #565f89;
