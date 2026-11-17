@@ -77,7 +77,7 @@ if pkill -x rofi 2>/dev/null; then
     exit 0
 fi
 
-CHOICE=$(printf '%s\n' "${OPTIONS[@]}" | rofi -dmenu -i -p "󰸉 Wallpaper" -theme-str 'window {width: 560px;} listview {lines: 12;}') || exit 0
+CHOICE=$(printf '%s\n' "${OPTIONS[@]}" | rofi -dmenu -no-sidebar-mode -i -p "󰸉 Wallpaper" -theme-str 'window {width: 560px;} listview {lines: 12;}') || exit 0
 [[ -z "$CHOICE" ]] && exit 0
 
 if [[ "$CHOICE" == "󰔎  Use Theme Default Backdrop" ]]; then

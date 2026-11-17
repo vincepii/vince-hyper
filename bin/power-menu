@@ -13,7 +13,7 @@ if pkill -x rofi 2>/dev/null; then
 fi
 
 CHOICE=$(printf '%s\n%s\n%s\n%s\n%s\n' "$LOCK" "$SUSPEND" "$LOGOUT" "$REBOOT" "$SHUTDOWN" \
-    | rofi -dmenu -i -p "󰐥 Power" -theme-str 'window {width: 280px;} listview {lines: 5;}') || exit 0
+    | rofi -dmenu -no-sidebar-mode -i -p "󰐥 Power" -theme-str 'window {width: 280px;} listview {lines: 5;}') || exit 0
 
 case "$CHOICE" in
     "$LOCK")

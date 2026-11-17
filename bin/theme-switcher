@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Unified Theme Switcher for Hyprland, Waybar, Rofi, Kitty, SwayNC, Hyprpaper, GTK
+# Unified Theme Switcher for Hyprland, Hyprlock, Waybar, Rofi, Kitty, SwayNC, GTK
 # ==============================================================================
 # Usage:
 #   theme-switcher                  # Open interactive Rofi menu
@@ -50,7 +50,7 @@ select_theme() {
         else
             printf '  %s\n' "$item"
         fi
-    done | rofi -dmenu -i -p "󰔎 Theme ($current)" -theme-str 'listview {lines: 12;}'
+    done | rofi -dmenu -no-sidebar-mode -i -p "󰔎 Theme ($current)" -theme-str 'listview {lines: 12;}'
 }
 
 if [[ -z "$CHOICE" ]]; then
@@ -73,8 +73,8 @@ case "$CHOICE" in
         IS_LIGHT=0
         BG="#1a1b26"
         BG_ALT="#24283b"
-        BG_RGBA="rgba(26, 27, 38, 0.90)"
-        BG_ALT_RGBA="rgba(36, 40, 59, 0.84)"
+        BG_RGBA="rgba(22, 22, 30, 0.88)"
+        BG_ALT_RGBA="rgba(47, 53, 73, 0.92)"
         SURFACE="#292e42"
         FG="#c0caf5"
         FG_DIM="#565f89"
@@ -105,8 +105,8 @@ case "$CHOICE" in
         IS_LIGHT=0
         BG="#1e1e2e"
         BG_ALT="#181825"
-        BG_RGBA="rgba(30, 30, 46, 0.90)"
-        BG_ALT_RGBA="rgba(49, 50, 68, 0.84)"
+        BG_RGBA="rgba(24, 24, 37, 0.88)"
+        BG_ALT_RGBA="rgba(54, 58, 79, 0.92)"
         SURFACE="#313244"
         FG="#cdd6f4"
         FG_DIM="#6c7086"
@@ -137,8 +137,8 @@ case "$CHOICE" in
         IS_LIGHT=0
         BG="#282828"
         BG_ALT="#1d2021"
-        BG_RGBA="rgba(40, 40, 40, 0.90)"
-        BG_ALT_RGBA="rgba(60, 56, 54, 0.84)"
+        BG_RGBA="rgba(29, 32, 33, 0.88)"
+        BG_ALT_RGBA="rgba(68, 62, 59, 0.92)"
         SURFACE="#3c3836"
         FG="#ebdbb2"
         FG_DIM="#928374"
@@ -169,8 +169,8 @@ case "$CHOICE" in
         IS_LIGHT=0
         BG="#2e3440"
         BG_ALT="#242933"
-        BG_RGBA="rgba(46, 52, 64, 0.90)"
-        BG_ALT_RGBA="rgba(59, 66, 82, 0.84)"
+        BG_RGBA="rgba(36, 41, 51, 0.88)"
+        BG_ALT_RGBA="rgba(67, 76, 94, 0.92)"
         SURFACE="#3b4252"
         FG="#eceff4"
         FG_DIM="#616e88"
@@ -201,8 +201,8 @@ case "$CHOICE" in
         IS_LIGHT=0
         BG="#191724"
         BG_ALT="#1f1d2e"
-        BG_RGBA="rgba(25, 23, 36, 0.90)"
-        BG_ALT_RGBA="rgba(38, 35, 58, 0.84)"
+        BG_RGBA="rgba(21, 19, 30, 0.88)"
+        BG_ALT_RGBA="rgba(49, 45, 72, 0.92)"
         SURFACE="#26233a"
         FG="#e0def4"
         FG_DIM="#6e6a86"
@@ -233,8 +233,8 @@ case "$CHOICE" in
         IS_LIGHT=0
         BG="#2d353b"
         BG_ALT="#232a2e"
-        BG_RGBA="rgba(45, 53, 59, 0.90)"
-        BG_ALT_RGBA="rgba(61, 72, 77, 0.84)"
+        BG_RGBA="rgba(35, 42, 46, 0.88)"
+        BG_ALT_RGBA="rgba(66, 78, 83, 0.92)"
         SURFACE="#3d484d"
         FG="#d3c6aa"
         FG_DIM="#859289"
@@ -265,8 +265,8 @@ case "$CHOICE" in
         IS_LIGHT=1
         BG="#e1e2e7"
         BG_ALT="#d0d5e3"
-        BG_RGBA="rgba(225, 226, 231, 0.92)"
-        BG_ALT_RGBA="rgba(208, 213, 227, 0.85)"
+        BG_RGBA="rgba(225, 226, 231, 0.90)"
+        BG_ALT_RGBA="rgba(196, 200, 218, 0.92)"
         SURFACE="#c4c8da"
         FG="#3760bf"
         FG_DIM="#6172b0"
@@ -297,8 +297,8 @@ case "$CHOICE" in
         IS_LIGHT=1
         BG="#eff1f5"
         BG_ALT="#e6e9ef"
-        BG_RGBA="rgba(239, 241, 245, 0.92)"
-        BG_ALT_RGBA="rgba(220, 224, 232, 0.85)"
+        BG_RGBA="rgba(239, 241, 245, 0.90)"
+        BG_ALT_RGBA="rgba(204, 208, 218, 0.92)"
         SURFACE="#ccd0da"
         FG="#4c4f69"
         FG_DIM="#8c8fa1"
@@ -329,8 +329,8 @@ case "$CHOICE" in
         IS_LIGHT=1
         BG="#fbf1c7"
         BG_ALT="#f2e5bc"
-        BG_RGBA="rgba(251, 241, 199, 0.92)"
-        BG_ALT_RGBA="rgba(235, 219, 178, 0.85)"
+        BG_RGBA="rgba(251, 241, 199, 0.90)"
+        BG_ALT_RGBA="rgba(213, 196, 161, 0.92)"
         SURFACE="#ebdbb2"
         FG="#3c3836"
         FG_DIM="#7c6f64"
@@ -361,8 +361,8 @@ case "$CHOICE" in
         IS_LIGHT=1
         BG="#faf4ed"
         BG_ALT="#fffaf3"
-        BG_RGBA="rgba(250, 244, 237, 0.92)"
-        BG_ALT_RGBA="rgba(242, 233, 225, 0.85)"
+        BG_RGBA="rgba(250, 244, 237, 0.90)"
+        BG_ALT_RGBA="rgba(223, 213, 206, 0.92)"
         SURFACE="#f2e9e1"
         FG="#575279"
         FG_DIM="#9893a5"
@@ -393,8 +393,8 @@ case "$CHOICE" in
         IS_LIGHT=1
         BG="#fdf6e3"
         BG_ALT="#f4f0d9"
-        BG_RGBA="rgba(253, 246, 227, 0.92)"
-        BG_ALT_RGBA="rgba(239, 235, 212, 0.85)"
+        BG_RGBA="rgba(253, 246, 227, 0.90)"
+        BG_ALT_RGBA="rgba(224, 218, 195, 0.92)"
         SURFACE="#efebd4"
         FG="#5c6a72"
         FG_DIM="#829181"
@@ -425,8 +425,8 @@ case "$CHOICE" in
         IS_LIGHT=1
         BG="#fdf6e3"
         BG_ALT="#eee8d5"
-        BG_RGBA="rgba(253, 246, 227, 0.92)"
-        BG_ALT_RGBA="rgba(238, 232, 213, 0.85)"
+        BG_RGBA="rgba(253, 246, 227, 0.90)"
+        BG_ALT_RGBA="rgba(216, 209, 190, 0.92)"
         SURFACE="#e4decb"
         FG="#586e75"
         FG_DIM="#93a1a1"
@@ -457,6 +457,27 @@ case "$CHOICE" in
         ;;
 esac
 
+hex_to_rgb() {
+    local hex="${1#\#}"
+    printf '%d, %d, %d' "0x${hex:0:2}" "0x${hex:2:2}" "0x${hex:4:2}"
+}
+
+hex_strip() {
+    printf '%s' "${1#\#}"
+}
+
+SURF_RGB="$(hex_to_rgb "$SURFACE")"
+ACCENT_RGB="$(hex_to_rgb "$ACCENT")"
+
+BG_HEX="$(hex_strip "$BG")"
+SURF_HEX="$(hex_strip "$SURFACE")"
+FG_HEX="$(hex_strip "$FG")"
+ACCENT_HEX="$(hex_strip "$ACCENT")"
+URGENT_HEX="$(hex_strip "$URGENT")"
+ORANGE_HEX="$(hex_strip "$ORANGE")"
+GREEN_HEX="$(hex_strip "$GREEN")"
+YELLOW_HEX="$(hex_strip "$YELLOW")"
+
 mkdir -p "$HOME/.config/themes" \
          "$HOME/.config/hypr" \
          "$HOME/.config/waybar" \
@@ -468,18 +489,39 @@ mkdir -p "$HOME/.config/themes" \
 
 echo "$NAME" > "$THEME_STATE"
 
-# 1. Hyprland Theme Module (~/.config/hypr/theme.lua)
+# 1. Hyprland Theme Module (~/.config/hypr/theme.lua) — borders + tabbed groupbar palette
 cat > "$HOME/.config/hypr/theme.lua" <<EOF
 -- Auto-generated by theme-switcher ($NAME)
 return {
     name = "$NAME",
     slug = "$SLUG",
-    active_border = { colors = { "$HYPR_ACTIVE", "$HYPR_ACTIVE2" }, angle = 45 },
-    inactive_border = "$HYPR_INACTIVE",
+    active_border          = { colors = { "$HYPR_ACTIVE", "$HYPR_ACTIVE2" }, angle = 45 },
+    inactive_border        = "$HYPR_INACTIVE",
+    group_border_active    = { colors = { "$HYPR_ACTIVE", "$HYPR_ACTIVE2" }, angle = 45 },
+    group_border_inactive  = "$HYPR_INACTIVE",
+    group_locked_active    = { colors = { "rgba(${URGENT_HEX}ee)", "rgba(${ORANGE_HEX}ee)" }, angle = 45 },
+    group_locked_inactive  = "$HYPR_INACTIVE",
+    groupbar_active        = "$HYPR_ACTIVE",
+    groupbar_inactive      = "rgba(${SURF_HEX}dd)",
+    groupbar_locked_active = "rgba(${URGENT_HEX}ee)",
+    groupbar_text_active   = "rgba(${BG_HEX}ff)",
+    groupbar_text_inactive = "rgba(${FG_HEX}ff)",
     bg = "$BG",
     fg = "$FG",
     accent = "$ACCENT",
 }
+EOF
+
+# 1b. Hyprlock Theme Colors (~/.config/hypr/hyprlock-colors.conf)
+cat > "$HOME/.config/hypr/hyprlock-colors.conf" <<EOF
+# Auto-generated by theme-switcher ($NAME)
+\$lock_bg       = rgba(${BG_HEX}ff)
+\$lock_surface  = rgba(${SURF_HEX}ee)
+\$lock_fg       = rgba(${FG_HEX}ff)
+\$lock_accent   = rgba(${ACCENT_HEX}ee)
+\$lock_check    = rgba(${GREEN_HEX}ee)
+\$lock_fail     = rgba(${URGENT_HEX}ee)
+\$lock_capslock = rgba(${YELLOW_HEX}ee)
 EOF
 
 # 2. Waybar CSS Colors (~/.config/waybar/colors.css)
@@ -503,6 +545,42 @@ cat > "$HOME/.config/waybar/colors.css" <<EOF
 @define-color teal $TEAL;
 @define-color dark_text $BG;
 EOF
+
+# 2b. Sync Waybar Clock Calendar Pango Hex Colors (~/.config/waybar/config.jsonc)
+if [[ -f "$HOME/.config/waybar/config.jsonc" ]]; then
+    python3 - "$HOME/.config/waybar/config.jsonc" "$ACCENT" "$ACCENT2" "$FG" "$FG_DIM" "$BG" "$URGENT" << 'PYEOF'
+import json, sys
+
+cfg_path, accent, accent2, fg, fg_dim, bg, urgent = sys.argv[1:8]
+with open(cfg_path, "r", encoding="utf-8") as f:
+    cfg = json.load(f)
+
+clock = cfg.setdefault("clock", {})
+clock["tooltip-format"] = (
+    f"<span font_family='JetBrainsMono Nerd Font' size='15pt' weight='bold' color='{accent}'>󰃭  {{:%A, %d %B %Y}}</span>\n\n"
+    f"<span font_family='JetBrainsMono Nerd Font' size='16pt' line_height='1.35'>{{calendar}}</span>\n\n"
+    f"<span font_family='JetBrainsMono Nerd Font' size='9.5pt' color='{fg_dim}'>󰍽 Scroll: Prev/Next   •   Right-Click: Year View</span>"
+)
+cal_fmt = clock.setdefault("calendar", {}).setdefault("format", {})
+cal_fmt["months"]   = f"<span font_family='JetBrainsMono Nerd Font' color='{accent2}'><b>{{}}</b></span>"
+cal_fmt["days"]     = f"<span font_family='JetBrainsMono Nerd Font' color='{fg}'>{{}}</span>"
+cal_fmt["weeks"]    = f"<span font_family='JetBrainsMono Nerd Font' color='{fg_dim}'><b>W{{}}</b></span>"
+cal_fmt["weekdays"] = f"<span font_family='JetBrainsMono Nerd Font' color='{accent}'><b>{{}}</b></span>"
+cal_fmt["today"]    = f"<span font_family='JetBrainsMono Nerd Font' background='{accent}' color='{bg}'><b>{{}}</b></span>"
+
+notif = cfg.get("custom/notification", {}).get("format-icons")
+if isinstance(notif, dict):
+    dot = f"<span foreground='{urgent}'><sup></sup></span>"
+    notif["notification"]               = f"󰂚{dot}"
+    notif["dnd-notification"]           = f"󰂛{dot}"
+    notif["inhibited-notification"]     = f"󰂚{dot}"
+    notif["dnd-inhibited-notification"] = f"󰂛{dot}"
+
+with open(cfg_path, "w", encoding="utf-8") as f:
+    json.dump(cfg, f, ensure_ascii=False, indent=2)
+    f.write("\n")
+PYEOF
+fi
 
 # 3. Rofi Theme Colors (~/.config/rofi/colors.rasi)
 cat > "$HOME/.config/rofi/colors.rasi" <<EOF
@@ -554,9 +632,38 @@ color7  $C7
 color15 $C15
 EOF
 
-# 5. SwayNC CSS Colors (~/.config/swaync/colors.css)
+# 5. SwayNC CSS Colors (~/.config/swaync/colors.css) — overrides :root defaults + @define-color fallbacks
 cat > "$HOME/.config/swaync/colors.css" <<EOF
 /* Auto-generated by theme-switcher ($NAME) */
+:root {
+  --cc-bg: $BG_RGBA;
+  --noti-border-color: $ACCENT;
+  --noti-bg: $SURF_RGB;
+  --noti-bg-alpha: 0.96;
+  --noti-bg-darker: $BG;
+  --noti-bg-hover: rgba($ACCENT_RGB, 0.14);
+  --noti-bg-focus: rgba($ACCENT_RGB, 0.20);
+  --noti-close-bg: rgba($ACCENT_RGB, 0.16);
+  --noti-close-bg-hover: $URGENT;
+  --text-color: $FG;
+  --text-color-disabled: $FG_DIM;
+  --bg-selected: $ACCENT;
+}
+
+@define-color cc-bg $BG_RGBA;
+@define-color noti-border-color $ACCENT;
+@define-color noti-bg rgba($SURF_RGB, 0.96);
+@define-color noti-bg-opaque $SURFACE;
+@define-color noti-bg-darker $BG;
+@define-color noti-bg-hover rgba($ACCENT_RGB, 0.14);
+@define-color noti-bg-hover-opaque $SURFACE;
+@define-color noti-bg-focus rgba($ACCENT_RGB, 0.20);
+@define-color noti-close-bg rgba($ACCENT_RGB, 0.16);
+@define-color noti-close-bg-hover $URGENT;
+@define-color text-color $FG;
+@define-color text-color-disabled $FG_DIM;
+@define-color bg-selected $ACCENT;
+
 @define-color bg $BG;
 @define-color bg_alt $BG_ALT;
 @define-color bg_bar $BG_RGBA;
@@ -639,6 +746,7 @@ if pgrep -x kitty >/dev/null 2>&1; then
 fi
 
 if pgrep -x waybar >/dev/null 2>&1; then
+    # SIGUSR2 resets Waybar completely, reloading both config.jsonc and style.css
     pkill -SIGUSR2 waybar 2>/dev/null || true
 fi
 

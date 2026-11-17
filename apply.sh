@@ -67,9 +67,45 @@ sync_back() {
           "$HOME/.config/waybar/style.css" \
           "$REPO_DIR/config/waybar/"
 
+    # Normalize theme-synced Pango hex colors in repo's config/waybar/config.jsonc back to Tokyo Night defaults
+    python3 - "$REPO_DIR/config/waybar/config.jsonc" << 'PYEOF'
+import json, sys
+
+cfg_path = sys.argv[1]
+accent, accent2, fg, fg_dim, bg, urgent = "#7aa2f7", "#bb9af7", "#c0caf5", "#565f89", "#1a1b26", "#f7768e"
+with open(cfg_path, "r", encoding="utf-8") as f:
+    cfg = json.load(f)
+
+clock = cfg.setdefault("clock", {})
+clock["tooltip-format"] = (
+    f"<span font_family='JetBrainsMono Nerd Font' size='15pt' weight='bold' color='{accent}'>󰃭  {{:%A, %d %B %Y}}</span>\n\n"
+    f"<span font_family='JetBrainsMono Nerd Font' size='16pt' line_height='1.35'>{{calendar}}</span>\n\n"
+    f"<span font_family='JetBrainsMono Nerd Font' size='9.5pt' color='{fg_dim}'>󰍽 Scroll: Prev/Next   •   Right-Click: Year View</span>"
+)
+cal_fmt = clock.setdefault("calendar", {}).setdefault("format", {})
+cal_fmt["months"]   = f"<span font_family='JetBrainsMono Nerd Font' color='{accent2}'><b>{{}}</b></span>"
+cal_fmt["days"]     = f"<span font_family='JetBrainsMono Nerd Font' color='{fg}'>{{}}</span>"
+cal_fmt["weeks"]    = f"<span font_family='JetBrainsMono Nerd Font' color='{fg_dim}'><b>W{{}}</b></span>"
+cal_fmt["weekdays"] = f"<span font_family='JetBrainsMono Nerd Font' color='{accent}'><b>{{}}</b></span>"
+cal_fmt["today"]    = f"<span font_family='JetBrainsMono Nerd Font' background='{accent}' color='{bg}'><b>{{}}</b></span>"
+
+notif = cfg.get("custom/notification", {}).get("format-icons")
+if isinstance(notif, dict):
+    dot = f"<span foreground='{urgent}'><sup></sup></span>"
+    notif["notification"]               = f"󰂚{dot}"
+    notif["dnd-notification"]           = f"󰂛{dot}"
+    notif["inhibited-notification"]     = f"󰂚{dot}"
+    notif["dnd-inhibited-notification"] = f"󰂛{dot}"
+
+with open(cfg_path, "w", encoding="utf-8") as f:
+    json.dump(cfg, f, ensure_ascii=False, indent=2)
+    f.write("\n")
+PYEOF
+
     cp -a "$HOME/.config/rofi/config.rasi" \
           "$HOME/.config/rofi/theme.rasi" \
           "$REPO_DIR/config/rofi/"
+    sed -i 's|icon-theme:.*;|icon-theme:                 "Papirus-Dark";|' "$REPO_DIR/config/rofi/config.rasi" 2>/dev/null || true
 
     cp -a "$HOME/.config/kitty/kitty.conf" \
           "$REPO_DIR/config/kitty/"
@@ -160,13 +196,48 @@ else
     echo "==> All required packages are already installed."
 fi
 
-# Configure SwayOSD libinput backend (if enabled) to ignore CapsLock so it doesn't
-# compete with bin/switch-layout's custom US/IT layout OSD toast.
-if systemctl is-enabled swayosd-libinput-backend.service >/dev/null 2>&1 || [[ -d /etc/xdg/swayosd ]]; then
-    if [[ ! -f /etc/xdg/swayosd/backend.toml ]] || ! grep -q "ignore_caps_lock_key = true" /etc/xdg/swayosd/backend.toml 2>/dev/null; then
+# Configure SwayOSD libinput backend (preserving any existing TOML sections) to ignore CapsLock
+# and immediately restart swayosd-libinput-backend.service if running/enabled.
+if systemctl is-enabled swayosd-libinput-backend.service >/dev/null 2>&1 \
+   || systemctl is-active swayosd-libinput-backend.service >/dev/null 2>&1 \
+   || [[ -d /etc/xdg/swayosd ]]; then
+    if [[ ! -f /etc/xdg/swayosd/backend.toml ]] || ! grep -Eq '^[[:space:]]*ignore_caps_lock_key[[:space:]]*=[[:space:]]*true' /etc/xdg/swayosd/backend.toml 2>/dev/null; then
         echo "==> Configuring /etc/xdg/swayosd/backend.toml (ignore_caps_lock_key = true)..."
         sudo mkdir -p /etc/xdg/swayosd
-        printf '[input]\nignore_caps_lock_key = true\n' | sudo tee /etc/xdg/swayosd/backend.toml >/dev/null || true
+        TMP_TOML="$(mktemp)"
+        python3 - /etc/xdg/swayosd/backend.toml "$TMP_TOML" << 'PYEOF'
+import os, re, sys
+
+src, dst = sys.argv[1], sys.argv[2]
+text = ""
+if os.path.exists(src):
+    with open(src, "r", encoding="utf-8") as f:
+        text = f.read()
+
+if re.search(r"(?m)^\[input\]\s*$", text):
+    def patch_input(match):
+        body = match.group(2)
+        if re.search(r"(?m)^\s*ignore_caps_lock_key\s*=", body):
+            body = re.sub(r"(?m)^\s*ignore_caps_lock_key\s*=.*$", "ignore_caps_lock_key = true", body)
+        else:
+            body = "ignore_caps_lock_key = true\n" + body
+        return match.group(1) + body
+    text = re.sub(r"(?ms)(^\[input\]\s*\n)(.*?)(?=^\[|\Z)", patch_input, text, count=1)
+else:
+    if text and not text.endswith("\n"):
+        text += "\n"
+    if text:
+        text += "\n"
+    text += "[input]\nignore_caps_lock_key = true\n"
+
+with open(dst, "w", encoding="utf-8") as f:
+    f.write(text)
+PYEOF
+        sudo install -m 0644 "$TMP_TOML" /etc/xdg/swayosd/backend.toml || true
+        rm -f "$TMP_TOML"
+        if systemctl is-active --quiet swayosd-libinput-backend.service || systemctl is-enabled --quiet swayosd-libinput-backend.service 2>/dev/null; then
+            sudo systemctl restart swayosd-libinput-backend.service 2>/dev/null || true
+        fi
     fi
 fi
 

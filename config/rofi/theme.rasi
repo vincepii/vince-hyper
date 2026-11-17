@@ -11,7 +11,7 @@
 window {
     location:                   center;
     anchor:                     center;
-    width:                      540px;
+    width:                      560px;
     background-color:           @bg;
     border:                     2px solid;
     border-color:               @accent;
@@ -21,7 +21,6 @@ window {
 
 mainbox {
     spacing:                    10px;
-    children:                   [ inputbar, listview ];
 }
 
 inputbar {
@@ -42,6 +41,18 @@ prompt {
 entry {
     placeholder:                "Type to search...";
     placeholder-color:          @fg-dim;
+    text-color:                 @fg;
+}
+
+message {
+    background-color:           @bg-alt;
+    border:                     1px solid;
+    border-color:               @surface;
+    border-radius:              8px;
+    padding:                    8px 12px;
+}
+
+textbox {
     text-color:                 @fg;
 }
 
@@ -81,4 +92,28 @@ element-icon {
 element-text {
     vertical-align:             0.5;
     text-color:                 inherit;
+}
+
+mode-switcher {
+    spacing:                    6px;
+    padding:                    4px 0px 0px 0px;
+}
+
+button {
+    padding:                    8px 10px;
+    border-radius:              6px;
+    background-color:           @bg-alt;
+    text-color:                 @fg-dim;
+    horizontal-align:           0.5;
+    vertical-align:             0.5;
+    cursor:                     pointer;
+}
+
+button selected,
+button selected.normal {
+    background-color:           @surface;
+    text-color:                 @accent;
+    font:                       "JetBrainsMono Nerd Font Bold 11";
+    border:                     1px solid;
+    border-color:               @accent;
 }

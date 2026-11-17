@@ -1,43 +1,137 @@
 @import "colors.css";
 
 * {
-  font-family: "JetBrainsMono Nerd Font", "Fira Sans", sans-serif;
+  font-family: "JetBrainsMono Nerd Font", "Noto Sans", sans-serif;
   font-size: 13px;
 }
 
 .notification-row {
+  background: none;
   outline: none;
 }
 
-.notification {
-  background: @bg;
+.notification,
+.notification-row .notification-background .notification {
+  background: @surface;
   color: @fg;
-  border: 2px solid @accent;
+  border: 1px solid @accent;
   border-radius: 10px;
   margin: 6px;
   padding: 10px;
 }
 
-.notification-content {
+.notification.critical,
+.notification-row .notification-background .notification.critical {
+  border: 2px solid @urgent;
+}
+
+.notification-content,
+.notification-row .notification-background .notification .notification-default-action .notification-content {
   background: transparent;
 }
 
-.summary {
+/* Match /etc/xdg/swaync/style.css 7-class selector specificity so light themes never fall back to white */
+.summary,
+.notification-row .notification-background .notification .notification-default-action .notification-content .text-box .summary {
   color: @fg;
   font-weight: 700;
+  text-shadow: none;
 }
 
-.time {
+.time,
+.notification-row .notification-background .notification .notification-default-action .notification-content .text-box .time {
   color: @fg_dim;
   font-size: 11px;
+  font-weight: 600;
+  text-shadow: none;
 }
 
-.body {
+.body,
+.notification-row .notification-background .notification .notification-default-action .notification-content .text-box .body {
   color: @fg;
+  font-weight: 400;
+  text-shadow: none;
+}
+
+.close-button {
+  background-color: alpha(@accent, 0.16);
+  background-image: none;
+  box-shadow: none;
+  text-shadow: none;
+  color: @fg;
+  border: none;
+  border-radius: 100%;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.close-button:hover {
+  background-color: @urgent;
+  background-image: none;
+  box-shadow: none;
+  color: @bg;
+}
+
+/* Keep action wrapper transparent so hover highlights apply only to the button itself */
+.control-center .control-center-list .notification .notification-action,
+.control-center .control-center-list .notification .notification-action:hover {
+  background: transparent;
+  background-color: transparent;
+}
+
+/* Explicit high-contrast button & label styling (eliminates GTK4 Adwaita gradient wash-out on light themes) */
+.notification-action > button,
+button.notification-action,
+.inline-reply-button,
+.widget-title > button,
+.widget-inhibitors > button,
+.notification-group-buttons > button {
+  background-color: @bg;
+  background-image: none;
+  box-shadow: none;
+  text-shadow: none;
+  color: @fg;
+  border: 1px solid @accent;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-weight: 600;
+}
+
+.notification-action > button label,
+button.notification-action label,
+.inline-reply-button label,
+.widget-title > button label,
+.widget-inhibitors > button label,
+.notification-group-buttons > button label {
+  color: @fg;
+  text-shadow: none;
+}
+
+.notification-action > button:hover,
+button.notification-action:hover,
+.inline-reply-button:hover,
+.widget-title > button:hover,
+.widget-inhibitors > button:hover,
+.notification-group-buttons > button:hover {
+  background-color: @accent;
+  background-image: none;
+  box-shadow: none;
+  color: @bg;
+  border-color: @accent;
+}
+
+.notification-action > button:hover label,
+button.notification-action:hover label,
+.inline-reply-button:hover label,
+.widget-title > button:hover label,
+.widget-inhibitors > button:hover label,
+.notification-group-buttons > button:hover label {
+  color: @bg;
+  text-shadow: none;
 }
 
 .control-center {
-  background: @bg;
+  background: @bg_bar;
   color: @fg;
   border: 2px solid @accent;
   border-radius: 12px;
@@ -48,6 +142,11 @@
   background: transparent;
 }
 
+.notification-group .notification-group-headers .notification-group-icon,
+.notification-group .notification-group-headers .notification-group-header {
+  color: @fg;
+}
+
 .widget-title {
   color: @accent;
   font-weight: 700;
@@ -55,32 +154,30 @@
   margin-bottom: 8px;
 }
 
-.widget-title > button {
-  background: @surface;
-  color: @fg;
-  border-radius: 6px;
-  padding: 4px 10px;
-  border: 1px solid @accent;
-}
-
-.widget-title > button:hover {
-  background: @accent;
-  color: @bg;
+.widget-title > label {
+  color: @accent;
 }
 
 .widget-dnd {
-  background: @bg_alt;
+  background: @surface;
   color: @fg;
+  border: 1px solid alpha(@accent, 0.25);
   border-radius: 8px;
   padding: 8px 12px;
   margin-bottom: 10px;
 }
 
+.widget-dnd label {
+  color: @fg;
+}
+
 .widget-dnd > switch {
-  background: @surface;
+  background: @bg;
+  border: 1px solid @fg_dim;
   border-radius: 8px;
 }
 
 .widget-dnd > switch:checked {
   background: @accent;
+  border-color: @accent;
 }

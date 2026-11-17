@@ -16,16 +16,21 @@ window#waybar {
   border: 1px solid alpha(@accent, 0.35);
 }
 
-tooltip {
-  background-color: @bg_bar;
+/* Solid opaque tooltip / calendar pop-over card */
+tooltip,
+tooltip.background {
+  background-color: @bg;
+  background-image: none;
   color: @fg;
   border: 2px solid @accent;
-  border-radius: 12px;
+  border-radius: 14px;
+  padding: 10px 14px;
 }
 
 tooltip label {
   color: @fg;
-  padding: 6px;
+  padding: 8px 10px;
+  text-shadow: none;
 }
 
 /* Left launcher pill */
@@ -50,7 +55,13 @@ tooltip label {
   margin: 4px 2px;
   padding: 0 4px;
   background-color: @bg_pill;
+  border: 1px solid alpha(@accent, 0.22);
   border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+#workspaces:hover {
+  border-color: alpha(@accent, 0.55);
 }
 
 #workspaces button {
@@ -81,6 +92,38 @@ tooltip label {
   border-radius: 6px;
 }
 
+/* Native maximized-window & hidden-window-count indicator */
+#windowcount {
+  padding: 0 11px;
+  margin: 4px 2px;
+  border-radius: 8px;
+  background-color: alpha(@orange, 0.22);
+  color: @orange;
+  border: 1px solid alpha(@orange, 0.65);
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+window#waybar.solo #windowcount {
+  background-color: @bg_pill;
+  color: @accent2;
+  border: 1px solid alpha(@accent2, 0.45);
+  font-weight: 600;
+}
+
+#windowcount:hover {
+  background-color: @accent;
+  color: @dark_text;
+  border-color: @accent;
+}
+
+#windowcount.empty {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+}
+
 #submap {
   margin: 4px 4px;
   padding: 0 10px;
@@ -102,6 +145,7 @@ tooltip label {
   margin: 4px 0;
   background-color: @bg_pill;
   color: @accent;
+  border: 1px solid alpha(@accent, 0.22);
   font-weight: 600;
   border-radius: 8px;
   transition: all 0.15s ease;
@@ -110,6 +154,7 @@ tooltip label {
 #clock:hover {
   background-color: alpha(@accent, 0.22);
   color: @fg;
+  border-color: alpha(@accent, 0.55);
 }
 
 /* Uniform right-side module pills */
@@ -131,10 +176,12 @@ tooltip label {
   margin: 4px 2px;
   background-color: @bg_pill;
   color: @fg;
+  border: 1px solid alpha(@accent, 0.22);
   border-radius: 8px;
   transition: all 0.15s ease;
 }
 
+#tray:hover,
 #mpris:hover,
 #idle_inhibitor:hover,
 #language:hover,
@@ -148,6 +195,7 @@ tooltip label {
 #battery:hover,
 #custom-notification:hover {
   background-color: alpha(@accent, 0.22);
+  border-color: alpha(@accent, 0.55);
 }
 
 /* Semantic per-module colors */
@@ -166,6 +214,7 @@ tooltip label {
 #idle_inhibitor.activated {
   background-color: alpha(@green, 0.2);
   color: @green;
+  border-color: alpha(@green, 0.55);
   font-weight: 600;
 }
 
@@ -240,10 +289,12 @@ tooltip label {
   margin-right: 6px;
   background-color: alpha(@urgent, 0.2);
   color: @urgent;
+  border-color: alpha(@urgent, 0.45);
   font-weight: 600;
 }
 
 #custom-power:hover {
   background-color: @urgent;
   color: @dark_text;
+  border-color: @urgent;
 }

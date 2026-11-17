@@ -13,7 +13,7 @@ if pkill -x rofi 2>/dev/null; then
     exit 0
 fi
 
-SELECTION=$(cliphist list | rofi -dmenu -i -p "󰅌 Clipboard" -display-columns 2) || exit 0
+SELECTION=$(cliphist list | rofi -dmenu -no-sidebar-mode -i -p "󰅌 Clipboard" -display-columns 2) || exit 0
 [[ -z "$SELECTION" ]] && exit 0
 
 printf '%s' "$SELECTION" | cliphist decode | wl-copy

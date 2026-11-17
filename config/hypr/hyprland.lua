@@ -1,5 +1,5 @@
 -- ============================================================================
--- Hyprland 0.57+ Configuration (Clean Power-User + i3 Dwindle Setup)
+-- Hyprland 0.57+ Configuration (Clean Power-User + Sway/i3 Dwindle Setup)
 -- ============================================================================
 
 local home = os.getenv("HOME")
@@ -7,11 +7,20 @@ package.path = home .. "/.config/hypr/?.lua;" .. package.path
 
 local ok, theme = pcall(require, "theme")
 if not ok or type(theme) ~= "table" then
-    theme = {
-        active_border   = { colors = { "rgba(7aa2f7ee)", "rgba(bb9af7ee)" }, angle = 45 },
-        inactive_border = "rgba(292e42aa)",
-    }
+    theme = {}
 end
+
+local activeBorder        = theme.active_border          or { colors = { "rgba(7aa2f7ee)", "rgba(bb9af7ee)" }, angle = 45 }
+local inactiveBorder      = theme.inactive_border        or "rgba(292e42aa)"
+local groupBorderActive   = theme.group_border_active    or activeBorder
+local groupBorderInactive = theme.group_border_inactive  or inactiveBorder
+local groupLockedActive   = theme.group_locked_active    or { colors = { "rgba(f7768eee)", "rgba(ff9e64ee)" }, angle = 45 }
+local groupLockedInactive = theme.group_locked_inactive  or inactiveBorder
+local groupbarActive      = theme.groupbar_active        or "rgba(7aa2f7ee)"
+local groupbarInactive    = theme.groupbar_inactive      or "rgba(292e42dd)"
+local groupbarLocked      = theme.groupbar_locked_active or "rgba(f7768eee)"
+local groupbarTextActive  = theme.groupbar_text_active   or "rgba(1a1b26ff)"
+local groupbarTextInact   = theme.groupbar_text_inactive or "rgba(c0caf5ff)"
 
 ------------------
 ---- MONITORS ----
@@ -38,7 +47,7 @@ local fileManager  = "nautilus --new-window"
 local browser      = "flatpak run com.google.Chrome"
 local launcher     = "rofi -show drun"
 local windowMenu   = "rofi -show window"
-local calcMenu     = "rofi -show calc -modi 'calc:" .. home .. "/.local/bin/rofi-calc'"
+local calcMenu     = "rofi -show calc"
 local emojiMenu    = "rofimoji --selector rofi --action copy"
 local clipMenu     = home .. "/.local/bin/clipboard-menu"
 local themeMenu    = home .. "/.local/bin/theme-switcher"
@@ -98,8 +107,32 @@ hl.config({
         no_focus_fallback   = true,
         layout              = "dwindle",
         col = {
-            active_border   = theme.active_border,
-            inactive_border = theme.inactive_border,
+            active_border   = activeBorder,
+            inactive_border = inactiveBorder,
+        },
+    },
+
+    group = {
+        col = {
+            border_active          = groupBorderActive,
+            border_inactive        = groupBorderInactive,
+            border_locked_active   = groupLockedActive,
+            border_locked_inactive = groupLockedInactive,
+        },
+        groupbar = {
+            font_family           = "JetBrainsMono Nerd Font",
+            font_size             = 11,
+            height                = 22,
+            rounding              = 6,
+            gradients             = true,
+            text_color            = groupbarTextActive,
+            text_color_inactive   = groupbarTextInact,
+            col = {
+                active          = groupbarActive,
+                inactive        = groupbarInactive,
+                locked_active   = groupbarLocked,
+                locked_inactive = groupbarInactive,
+            },
         },
     },
 
@@ -233,40 +266,50 @@ hl.gesture({
     action    = "workspace",
 })
 
--------------------------------------------------
----- KEYBINDINGS (i3 Dwindle + Power-User)   ----
--------------------------------------------------
+-------------------------------------------------------
+---- KEYBINDINGS (Standardized Sway/i3 + Dwindle)  ----
+-------------------------------------------------------
 local mainMod = "SUPER"
 
--- 1. Launcher, Window Switcher, Inline Calculator, Emoji Picker
-hl.bind("SUPER + SUPER_L",      hl.dsp.exec_cmd("pkill -x rofi || " .. launcher),   { release = true, description = "Toggle App Launcher on Super tap" })
-hl.bind(mainMod .. " + D",      hl.dsp.exec_cmd("pkill -x rofi || " .. launcher),   { non_consuming = false, description = "App Launcher" })
-hl.bind(mainMod .. " + Space",  hl.dsp.exec_cmd("pkill -x rofi || " .. launcher),   { description = "App Launcher" })
-hl.bind(mainMod .. " + Tab",    hl.dsp.exec_cmd("pkill -x rofi || " .. windowMenu), { description = "Window Switcher" })
-hl.bind(mainMod .. " + equal",  hl.dsp.exec_cmd("pkill -x rofi || " .. calcMenu),   { description = "Inline Calculator (Rofi + qalc)" })
-hl.bind(mainMod .. " + period", hl.dsp.exec_cmd("pkill -x rofi || " .. emojiMenu),  { description = "Emoji Picker (rofimoji)" })
-hl.bind("ALT + Tab",            hl.dsp.window.cycle_next(), { description = "Cycle next window" })
+-- 1. Core Applications & Launchers
+hl.bind("SUPER + SUPER_L",              hl.dsp.exec_cmd("pkill -x rofi || " .. launcher),   { release = true, description = "Toggle App Launcher on Left Super tap" })
+hl.bind("SUPER + SUPER_R",              hl.dsp.exec_cmd("pkill -x rofi || " .. launcher),   { release = true, description = "Toggle App Launcher on Right Super tap" })
+hl.bind(mainMod .. " + D",              hl.dsp.exec_cmd("pkill -x rofi || " .. launcher),   { non_consuming = false, description = "App Launcher" })
+hl.bind(mainMod .. " + Space",          hl.dsp.exec_cmd("pkill -x rofi || " .. launcher),   { description = "App Launcher" })
+hl.bind(mainMod .. " + Tab",            hl.dsp.exec_cmd("pkill -x rofi || " .. windowMenu), { description = "Window Switcher" })
+hl.bind("ALT + Tab",                    hl.dsp.window.cycle_next(),                         { description = "Cycle next window" })
+hl.bind(mainMod .. " + Return",         hl.dsp.exec_cmd(terminal),                          { description = "Terminal (Kitty)" })
+hl.bind(mainMod .. " + B",              hl.dsp.exec_cmd(browser),                           { description = "Browser (Chrome)" })
+hl.bind(mainMod .. " + E",              hl.dsp.exec_cmd(fileManager),                       { description = "File Manager (Nautilus)" })
+hl.bind("CTRL + SHIFT + Escape",        hl.dsp.exec_cmd("pkill -f 'kitty --class floating-btop' || kitty --class floating-btop -e btop"), { description = "System Monitor (floating btop)" })
+hl.bind(mainMod .. " + Slash",          hl.dsp.exec_cmd(keybindMenu),                       { description = "Keybind Cheat Sheet" })
+hl.bind(mainMod .. " + SHIFT + Slash",  hl.dsp.exec_cmd(keybindMenu),                       { description = "Keybind Cheat Sheet" })
+hl.bind(mainMod .. " + equal",          hl.dsp.exec_cmd("pkill -x rofi || " .. calcMenu),   { description = "Inline Calculator (Rofi + qalc)" })
+hl.bind(mainMod .. " + period",         hl.dsp.exec_cmd("pkill -x rofi || " .. emojiMenu),  { description = "Emoji Picker (rofimoji)" })
+hl.bind(mainMod .. " + V",              hl.dsp.exec_cmd(clipMenu),                          { description = "Clipboard Manager" })
+hl.bind(mainMod .. " + SHIFT + T",      hl.dsp.exec_cmd(themeMenu),                         { description = "Theme Selector" })
+hl.bind(mainMod .. " + CTRL + W",       hl.dsp.exec_cmd(wallMenu),                          { description = "Wallpaper Selector" })
+hl.bind(mainMod .. " + N",              hl.dsp.exec_cmd("swaync-client -t -sw"),            { description = "Notification Center" })
 
--- Keyboard Layout Switch (CapsLock or Super+Ctrl+Space): synchronizes all keyboard devices + SwayOSD
-hl.bind("code:66",                   hl.dsp.exec_cmd(switchLayout), { description = "Switch Keyboard Layout (US <-> IT)" })
-hl.bind(mainMod .. " + CTRL + Space", hl.dsp.exec_cmd(switchLayout), { description = "Switch Keyboard Layout (US <-> IT)" })
+-- 2. Window Management (Sway / i3 + Dwindle)
+hl.bind(mainMod .. " + Q",              hl.dsp.window.close(),                              { description = "Close active window" })
+hl.bind(mainMod .. " + SHIFT + Q",      hl.dsp.window.close(),                              { description = "Close active window" })
+hl.bind(mainMod .. " + C",              hl.dsp.window.close(),                              { description = "Close active window" })
+hl.bind(mainMod .. " + SHIFT + Escape", hl.dsp.release_input_capture(),                     { dont_inhibit = true, description = "Force-release VM / Remote Desktop keyboard grab" })
+hl.bind(mainMod .. " + F",              hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }), { description = "Toggle Fullscreen" })
+hl.bind(mainMod .. " + M",              hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }),  { description = "Toggle Maximize (keep Waybar)" })
+hl.bind(mainMod .. " + SHIFT + Space",  hl.dsp.window.float({ action = "toggle" }),         { description = "Toggle Floating / Tiling" })
+hl.bind(mainMod .. " + P",              hl.dsp.window.pseudo(),                             { description = "Toggle Pseudo-Tile" })
+hl.bind(mainMod .. " + O",              hl.dsp.layout("togglesplit"),                       { description = "Toggle Split Orientation (Dwindle)" })
+hl.bind(mainMod .. " + Backslash",      hl.dsp.layout("togglesplit"),                       { description = "Toggle Split Orientation (Dwindle)" })
 
--- 2. Core Applications
-hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal),    { description = "Terminal (Kitty)" })
-hl.bind(mainMod .. " + B",      hl.dsp.exec_cmd(browser),     { description = "Browser (Chrome)" })
-hl.bind(mainMod .. " + E",      hl.dsp.exec_cmd(fileManager), { description = "File Manager (Nautilus)" })
-hl.bind("CTRL + SHIFT + Escape", hl.dsp.exec_cmd("pkill -f 'kitty --class floating-btop' || kitty --class floating-btop -e btop"), { description = "System Monitor (floating btop)" })
-
--- 3. Window Management (i3 + Dwindle conventions)
-hl.bind(mainMod .. " + Q",           hl.dsp.window.close(), { description = "Close active window" })
-hl.bind(mainMod .. " + W",           hl.dsp.window.close(), { description = "Close active window" })
-hl.bind(mainMod .. " + SHIFT + Q",   hl.dsp.window.close(), { description = "Close active window" })
-hl.bind(mainMod .. " + SHIFT + Escape", hl.dsp.release_input_capture(), { dont_inhibit = true, description = "Force-release VM / Remote Desktop keyboard grab" })
-hl.bind(mainMod .. " + F",           hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }), { description = "Toggle Fullscreen" })
-hl.bind(mainMod .. " + M",           hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }),  { description = "Toggle Maximize" })
-hl.bind(mainMod .. " + SHIFT + Space", hl.dsp.window.float({ action = "toggle" }), { description = "Toggle Floating" })
-hl.bind(mainMod .. " + O",           hl.dsp.layout("togglesplit"), { description = "Toggle Split Orientation (Dwindle)" })
-hl.bind(mainMod .. " + Backslash",   hl.dsp.layout("togglesplit"), { description = "Toggle Split Orientation (Dwindle)" })
+-- 3. Tabbed Window Groups (Super + W)
+hl.bind(mainMod .. " + W",              hl.dsp.group.toggle(),                              { description = "Toggle Tabbed Window Group" })
+hl.bind(mainMod .. " + SHIFT + W",      hl.dsp.window.move({ out_of_group = true }),        { description = "Move Active Window Out of Group" })
+hl.bind(mainMod .. " + ALT + H",        hl.dsp.group.prev(),                                { description = "Previous Window Tab in Group" })
+hl.bind(mainMod .. " + ALT + left",     hl.dsp.group.prev(),                                { description = "Previous Window Tab in Group" })
+hl.bind(mainMod .. " + ALT + L",        hl.dsp.group.next(),                                { description = "Next Window Tab in Group" })
+hl.bind(mainMod .. " + ALT + right",    hl.dsp.group.next(),                                { description = "Next Window Tab in Group" })
 
 -- 4. Focus Navigation: Super + H/J/K/L and Arrow Keys
 hl.bind(mainMod .. " + H",     hl.dsp.focus({ direction = "l" }), { description = "Focus left" })
@@ -288,65 +331,59 @@ hl.bind(mainMod .. " + SHIFT + down",  hl.dsp.window.move({ direction = "d" }), 
 hl.bind(mainMod .. " + SHIFT + up",    hl.dsp.window.move({ direction = "u" }), { description = "Move window up" })
 hl.bind(mainMod .. " + SHIFT + right", hl.dsp.window.move({ direction = "r" }), { description = "Move window right" })
 
--- 6. Resize Windows: Super + Ctrl + H/J/K/L and Arrow Keys
-hl.bind(mainMod .. " + CTRL + H",     hl.dsp.window.resize({ x = -60, y = 0,   relative = true }), { repeating = true, description = "Resize narrower" })
-hl.bind(mainMod .. " + CTRL + L",     hl.dsp.window.resize({ x = 60,  y = 0,   relative = true }), { repeating = true, description = "Resize wider" })
-hl.bind(mainMod .. " + CTRL + K",     hl.dsp.window.resize({ x = 0,   y = -60, relative = true }), { repeating = true, description = "Resize shorter" })
-hl.bind(mainMod .. " + CTRL + J",     hl.dsp.window.resize({ x = 0,   y = 60,  relative = true }), { repeating = true, description = "Resize taller" })
-hl.bind(mainMod .. " + CTRL + left",  hl.dsp.window.resize({ x = -60, y = 0,   relative = true }), { repeating = true })
-hl.bind(mainMod .. " + CTRL + right", hl.dsp.window.resize({ x = 60,  y = 0,   relative = true }), { repeating = true })
-hl.bind(mainMod .. " + CTRL + up",    hl.dsp.window.resize({ x = 0,   y = -60, relative = true }), { repeating = true })
-hl.bind(mainMod .. " + CTRL + down",  hl.dsp.window.resize({ x = 0,   y = 60,  relative = true }), { repeating = true })
-
--- 7. Workspaces 1..10 (Switch, Move + Follow, Silent Move)
-for i = 1, 10 do
-    local key = i % 10 -- 10 maps to key 0
-    hl.bind(mainMod .. " + " .. key,         hl.dsp.focus({ workspace = i }),                         { description = "Switch to workspace " .. i })
-    hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }),                   { description = "Move window to workspace " .. i })
-    hl.bind(mainMod .. " + CTRL + " .. key,  hl.dsp.window.move({ workspace = i, follow = false }),   { description = "Move window silently to workspace " .. i })
-end
-
--- Cycle Previous / Next Workspaces: Super + [ / ] and Mouse Scroll
-hl.bind(mainMod .. " + bracketleft",  hl.dsp.focus({ workspace = "e-1" }), { description = "Previous Workspace" })
-hl.bind(mainMod .. " + bracketright", hl.dsp.focus({ workspace = "e+1" }), { description = "Next Workspace" })
-hl.bind(mainMod .. " + mouse_down",   hl.dsp.focus({ workspace = "e+1" }))
-hl.bind(mainMod .. " + mouse_up",     hl.dsp.focus({ workspace = "e-1" }))
-
--- Scratchpad (Special Workspace)
-hl.bind(mainMod .. " + grave",         hl.dsp.workspace.toggle_special("scratchpad"), { description = "Toggle Scratchpad" })
-hl.bind(mainMod .. " + SHIFT + grave", hl.dsp.window.move({ workspace = "special:scratchpad" }), { description = "Send to Scratchpad" })
+-- 6. Resize Windows (40px steps): Super + Ctrl + H/J/K/L and Arrow Keys
+hl.bind(mainMod .. " + CTRL + H",     hl.dsp.window.resize({ x = -40, y = 0,   relative = true }), { repeating = true, description = "Resize narrower" })
+hl.bind(mainMod .. " + CTRL + L",     hl.dsp.window.resize({ x = 40,  y = 0,   relative = true }), { repeating = true, description = "Resize wider" })
+hl.bind(mainMod .. " + CTRL + K",     hl.dsp.window.resize({ x = 0,   y = -40, relative = true }), { repeating = true, description = "Resize shorter" })
+hl.bind(mainMod .. " + CTRL + J",     hl.dsp.window.resize({ x = 0,   y = 40,  relative = true }), { repeating = true, description = "Resize taller" })
+hl.bind(mainMod .. " + CTRL + left",  hl.dsp.window.resize({ x = -40, y = 0,   relative = true }), { repeating = true })
+hl.bind(mainMod .. " + CTRL + right", hl.dsp.window.resize({ x = 40,  y = 0,   relative = true }), { repeating = true })
+hl.bind(mainMod .. " + CTRL + up",    hl.dsp.window.resize({ x = 0,   y = -40, relative = true }), { repeating = true })
+hl.bind(mainMod .. " + CTRL + down",  hl.dsp.window.resize({ x = 0,   y = 40,  relative = true }), { repeating = true })
 
 -- Mouse Drag & Resize
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
--- 8. Utilities: Clipboard, Theme Switcher, Wallpaper Switcher, Screenshots, Notifications, Power, Lock
-hl.bind(mainMod .. " + V",         hl.dsp.exec_cmd(clipMenu),    { description = "Clipboard Manager" })
-hl.bind(mainMod .. " + C",         hl.dsp.exec_cmd(clipMenu),    { description = "Clipboard Manager" })
-hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd(themeMenu),   { description = "Theme Selector" })
-hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd(wallMenu),    { description = "Wallpaper Selector" })
-hl.bind(mainMod .. " + N",         hl.dsp.exec_cmd("swaync-client -t -sw"), { description = "Notification Center" })
-hl.bind(mainMod .. " + Slash",     hl.dsp.exec_cmd(keybindMenu), { description = "Keybind Cheat Sheet" })
-hl.bind(mainMod .. " + SHIFT + Slash", hl.dsp.exec_cmd(keybindMenu), { description = "Keybind Cheat Sheet" })
+-- 7. Workspaces 1..10 & Scratchpad
+for i = 1, 10 do
+    local key = i % 10 -- 10 maps to key 0
+    hl.bind(mainMod .. " + " .. key,         hl.dsp.focus({ workspace = i }),                       { description = "Switch to workspace " .. i })
+    hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }),                 { description = "Move window to workspace " .. i })
+    hl.bind(mainMod .. " + CTRL + " .. key,  hl.dsp.window.move({ workspace = i, follow = false }), { description = "Move window silently to workspace " .. i })
+end
 
--- Screenshots (Print-less friendly + Print fallback)
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd(screenshot .. " region"), { description = "Screenshot Region (Copy + Save)" })
-hl.bind(mainMod .. " + S",         hl.dsp.exec_cmd(screenshot .. " edit"),   { description = "Screenshot Region + Annotate (satty)" })
-hl.bind(mainMod .. " + ALT + S",   hl.dsp.exec_cmd(screenshot .. " edit"),   { description = "Screenshot Region + Annotate (satty)" })
-hl.bind(mainMod .. " + CTRL + S",  hl.dsp.exec_cmd(screenshot .. " full"),   { description = "Screenshot Fullscreen" })
-hl.bind(mainMod .. " + P",         hl.dsp.exec_cmd(screenshot .. " window"), { description = "Screenshot Active Window" })
-hl.bind("Print",                   hl.dsp.exec_cmd(screenshot .. " region"), { description = "Screenshot Region" })
-hl.bind("SHIFT + Print",           hl.dsp.exec_cmd(screenshot .. " full"),   { description = "Screenshot Fullscreen" })
-hl.bind("ALT + Print",             hl.dsp.exec_cmd(screenshot .. " window"), { description = "Screenshot Active Window" })
+-- Cycle Previous / Next Workspaces: Super + [ / ] and Mouse Scroll
+hl.bind(mainMod .. " + bracketleft",  hl.dsp.focus({ workspace = "e-1" }), { description = "Previous Workspace" })
+hl.bind(mainMod .. " + bracketright", hl.dsp.focus({ workspace = "e+1" }), { description = "Next Workspace" })
+hl.bind(mainMod .. " + mouse_up",     hl.dsp.focus({ workspace = "e-1" }))
+hl.bind(mainMod .. " + mouse_down",   hl.dsp.focus({ workspace = "e+1" }))
+
+-- Scratchpad (Special Workspace): Super + minus (-) and Super + S
+hl.bind(mainMod .. " + minus",         hl.dsp.workspace.toggle_special("scratchpad"),          { description = "Toggle Scratchpad" })
+hl.bind(mainMod .. " + S",             hl.dsp.workspace.toggle_special("scratchpad"),          { description = "Toggle Scratchpad" })
+hl.bind(mainMod .. " + SHIFT + minus", hl.dsp.window.move({ workspace = "special:scratchpad" }), { description = "Move Window to Scratchpad" })
+
+-- 8. Screenshots & Color Picker
+hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd(screenshot .. " region"), { description = "Screenshot Region -> Clipboard" })
+hl.bind("Print",                   hl.dsp.exec_cmd(screenshot .. " region"), { description = "Screenshot Region -> Clipboard" })
+hl.bind(mainMod .. " + CTRL + S",  hl.dsp.exec_cmd(screenshot .. " edit"),   { description = "Screenshot Region -> Annotate/Edit (satty)" })
+hl.bind("SHIFT + Print",           hl.dsp.exec_cmd(screenshot .. " edit"),   { description = "Screenshot Region -> Annotate/Edit (satty)" })
+hl.bind(mainMod .. " + Print",     hl.dsp.exec_cmd(screenshot .. " edit"),   { description = "Screenshot Region -> Annotate/Edit (satty)" })
+hl.bind(mainMod .. " + ALT + S",   hl.dsp.exec_cmd(screenshot .. " full"),   { description = "Screenshot Fullscreen -> Clipboard" })
+hl.bind("CTRL + Print",            hl.dsp.exec_cmd(screenshot .. " full"),   { description = "Screenshot Fullscreen -> Clipboard" })
 hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd("hyprpicker -a -n"),      { description = "Color Picker (Hex to Clipboard)" })
 
--- Lock & Power Menu
-hl.bind(mainMod .. " + Escape",    hl.dsp.exec_cmd(powerMenu), { description = "Power Menu" })
-hl.bind(mainMod .. " + X",         hl.dsp.exec_cmd(powerMenu), { description = "Power Menu" })
-hl.bind("CTRL + ALT + L",          hl.dsp.exec_cmd("pidof hyprlock || hyprlock"), { description = "Lock Screen" })
-hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload && pkill -SIGUSR2 waybar"), { description = "Reload Config" })
+-- 9. Input, Session, Lock & Bar
+hl.bind("code:66",                   hl.dsp.exec_cmd(switchLayout),                    { description = "Switch Keyboard Layout (US <-> IT)" })
+hl.bind(mainMod .. " + CTRL + Space", hl.dsp.exec_cmd(switchLayout),                   { description = "Switch Keyboard Layout (US <-> IT)" })
+hl.bind("CTRL + ALT + L",            hl.dsp.exec_cmd("pidof hyprlock || hyprlock"),    { description = "Lock Screen" })
+hl.bind(mainMod .. " + Escape",      hl.dsp.exec_cmd("pidof hyprlock || hyprlock"),    { description = "Lock Screen" })
+hl.bind(mainMod .. " + SHIFT + E",   hl.dsp.exec_cmd(powerMenu),                       { description = "Power / Logout Menu" })
+hl.bind(mainMod .. " + SHIFT + B",   hl.dsp.exec_cmd("pkill -x waybar; waybar"),       { description = "Restart Waybar" })
+hl.bind(mainMod .. " + SHIFT + R",   hl.dsp.exec_cmd("hyprctl reload && pkill -SIGUSR2 waybar"), { description = "Reload Hyprland + Waybar" })
 
--- 9. Hardware / Media Keys (SwayOSD On-Screen Display with wpctl/brightnessctl/playerctl fallback)
+-- 10. Multimedia & Hardware Keys (SwayOSD On-Screen Display with wpctl/brightnessctl/playerctl fallback)
 hl.bind("XF86AudioRaiseVolume",  hl.dsp.exec_cmd("swayosd-client --output-volume +5 --max-volume 100 || wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
 hl.bind("XF86AudioLowerVolume",  hl.dsp.exec_cmd("swayosd-client --output-volume -5 || wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),                   { locked = true, repeating = true })
 hl.bind("XF86AudioMute",         hl.dsp.exec_cmd("swayosd-client --output-volume mute-toggle || wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),          { locked = true })
@@ -385,6 +422,13 @@ hl.window_rule({
     name         = "fullscreen-idle-inhibit",
     match        = { fullscreen = true },
     idle_inhibit = "always",
+})
+
+-- Tiled browser video calls (Google Meet, Zoom, Microsoft Teams, Webex, Jitsi) inhibit idle when focused
+hl.window_rule({
+    name         = "videocall-idle-inhibit",
+    match        = { title = ".*(Meet - |Google Meet|Zoom Meeting|Zoom Workplace|Microsoft Teams|Webex|Jitsi Meet|Slack \\| Huddle).*" },
+    idle_inhibit = "focus",
 })
 
 -- Floating btop toggle from Waybar CPU / Memory pills

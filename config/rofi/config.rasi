@@ -1,10 +1,11 @@
 configuration {
-    modi:                       "drun,run,window,calc:~/.local/bin/rofi-calc";
+    modi:                       "drun,window,run,calc:~/.local/bin/rofi-calc";
+    sidebar-mode:               true;
     show-icons:                 true;
-    display-drun:               "󰀻 Apps";
-    display-run:                "󰆍 Run";
-    display-window:             "󱂬 Windows";
-    display-calc:               "󰪚 Calc";
+    display-drun:               " 󰀻  Apps ";
+    display-window:             " 󱂬  Windows ";
+    display-run:                " 󰆍  Command ";
+    display-calc:               " 󰪚  Calc ";
     drun-display-format:        "{name}";
     window-format:              "{w} · {c} · {t}";
     font:                       "JetBrainsMono Nerd Font 11";
@@ -15,7 +16,7 @@ configuration {
     kb-row-up:                  "Up,Control+k,Control+p";
     kb-row-down:                "Down,Control+j,Control+n";
     kb-matcher-up:              "";
-    kb-cancel:                  "Escape,Super+v,Super+c,Super+d,Super+space,Super+Escape,Super+x,Super+slash,Super+question,Super+T,Super+W,Super+equal,Super+period";
+    kb-cancel:                  "Escape,Control+g,Super+v,Super+d,Super+space,Super+slash,Super+Shift+T,Super+Ctrl+W,Super+equal,Super+period,Super+Shift+E";
 }
 
 @theme "~/.config/rofi/theme.rasi"

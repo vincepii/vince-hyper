@@ -2,19 +2,20 @@
 
 A minimal, fast, productivity-focused **Hyprland (`0.55+` / `0.57+` native Lua)** desktop configuration for **CachyOS / Arch Linux**.
 
-A clean aesthetic with a floating pill-based Waybar and a curated 12-theme switcher (6 Dark + 6 Light), paired with classic **i3 / Vim (`H/J/K/L`) dwindle window management** and standard, battle-tested Wayland components (**Waybar**, **Rofi**, **SwayNC**, **SwayOSD**, **Kitty**, **Cliphist**, **Grim/Slurp/Satty**).
+A clean aesthetic with a high-contrast floating pill-based Waybar, a multi-tab Rofi launcher (**Apps**, **Windows**, **Command**, **Calc**), and a curated 12-theme switcher (6 Dark + 6 Light), paired with **Sway / i3 / Vim (`H/J/K/L`) dwindle + tabbed-group window management** and standard Wayland components (**Waybar**, **Rofi**, **SwayNC**, **SwayOSD**, **Hyprlock**, **Kitty**, **Cliphist**, **Grim/Slurp/Satty**).
 
 ---
 
 ## Philosophy & Design Goals
 
 1. **Zero Bloat / No Gimmicks**: No custom Quickshell/AGS/Astal daemons, no audio visualizer bars, no docks, no anime wallpapers. Just a crisp floating pill top panel and fast keyboard-driven workflows.
-2. **Standard i3 / Vim Navigation**: `Super + H/J/K/L` always focuses windows (`Left/Down/Up/Right`, stopping cleanly at screen edges), `Super + Shift + H/J/K/L` moves windows, and `Super + Ctrl + H/J/K/L` resizes windows.
-3. **Unified 12-Palette Theme Switcher**: One script (`theme-switcher`) simultaneously updates **Hyprland borders**, **Waybar floating pills**, **Rofi**, **Kitty**, **SwayNC**, **GTK 3/4 themes (`Adwaita-dark` / `Adwaita`)**, **Papirus icons (`Papirus-Dark` / `Papirus-Light`)**, and **Hyprpaper** wallpapers across 12 palettes (6 dark + 6 light):
+2. **Standardized Sway / i3 / Vim Ergonomics**: `Super + H/J/K/L` focuses windows (`Left/Down/Up/Right`, stopping cleanly at screen edges), `Super + Shift + H/J/K/L` moves windows, `Super + Ctrl + H/J/K/L` resizes windows, and `Super + W` manages tabbed window groups (`Super + Alt + H/L` to switch tabs, `Super + Shift + W` to pop out).
+3. **Multi-Tab Rofi Launcher**: Launching Rofi (`Super`, `Super + D`, `Super + Tab`, or `Super + =`) displays a unified bottom mode-switcher bar (`Apps`, `Windows`, `Command`, `Calc`) switchable via mouse click or `Ctrl + Tab` / `Shift + Left/Right`, while single-purpose `-dmenu` menus stay compact and tab-free.
+4. **Unified 12-Palette Theme Switcher**: One script (`theme-switcher`) simultaneously updates **Hyprland borders & tabbed groupbars**, **Hyprlock**, **Waybar floating pills & interactive Pango calendar pop-over**, **Rofi**, **Kitty**, **SwayNC** (including `:root` variables for crisp light-theme action buttons), **GTK 3/4 themes (`Adwaita-dark` / `Adwaita`)**, **Papirus icons (`Papirus-Dark` / `Papirus-Light`)**, and **Hyprpaper** wallpapers across 12 palettes (6 dark + 6 light):
    - **Dark**: **Tokyo Night** *(default)*, **Catppuccin Mocha**, **Gruvbox Dark**, **Nord**, **Rosé Pine**, **Everforest**
    - **Light**: **Tokyo Night Day (Light)**, **Catppuccin Latte (Light)**, **Gruvbox Light**, **Rose Pine Dawn (Light)**, **Everforest Light**, **Solarized Light**
-4. **Fractional Scaling (`1.25x`) & Compositor Efficiency**: Tuned fontconfig (`hintnone`, grayscale AA, no stem darkening) and `Xft.dpi: 120` for razor-sharp rendering at `1.25x` scale, Smart Gaps when a single tiled window is open, VFR + direct scanout for minimal GPU usage, and multi-device synchronized `US` <-> `IT` keyboard layout switching with SwayOSD feedback.
-5. **Portable & Self-Contained**: No external dotfile managers, symlink farms, or Python virtualenvs required. `apply.sh` deploys everything cleanly and generates minimal gradient wallpapers programmatically.
+5. **Smart Gaps + Native Maximized-Window Indicator**: Single tiled windows automatically expand edge-to-edge without borders (`w[tv1]` / `f[1]`), while Waybar's built-in `hyprland/windowcount` pill (`󰊓 N`) appears whenever a window is maximized (`Super + M`)—highlighted in `@orange` when other tiled windows are hidden underneath—with left-click to unmaximize and right-click to switch hidden windows.
+6. **Fractional Scaling (`1.25x`) & Compositor Efficiency**: Tuned fontconfig (`hintnone`, grayscale AA, no stem darkening) and `Xft.dpi: 120` for razor-sharp rendering at `1.25x` scale, VFR + direct scanout for minimal GPU usage, automatic idle inhibition during fullscreen apps and tiled browser video calls, and multi-device synchronized `US` <-> `IT` keyboard layout switching with SwayOSD feedback.
 
 ---
 
@@ -22,46 +23,47 @@ A clean aesthetic with a floating pill-based Waybar and a curated 12-theme switc
 
 ```text
 vince-hyper/
-├── apply.sh                  # Bootstrap & sync script (apply / upgrade, --sync-back)
-├── README.md                 # User & AI Agent architecture documentation
-├── bin/                      # Installed to ~/.local/bin/
-│   ├── theme-switcher        # Rofi theme selector + multi-app / GTK / Papirus palette generator
-│   ├── wallpaper-switcher    # Rofi wallpaper selector (Pictures/Wallpapers + System)
-│   ├── switch-layout         # Synchronized multi-device keyboard layout switcher (US <-> IT) + SwayOSD
-│   ├── rofi-calc             # Inline Rofi calculator mode (qalc + Python math fallback + wl-copy)
-│   ├── screenshot            # grim + slurp + satty + wl-copy screenshot utility
-│   ├── clipboard-menu        # cliphist + rofi clipboard manager
-│   ├── power-menu            # rofi power menu (lock, suspend, logout, reboot, shutdown)
-│   └── keybinds-menu         # Searchable rofi keybinding cheat sheet
-└── config/                   # Installed to ~/.config/
+├── apply.sh                     # Bootstrap & sync script (apply / upgrade, --sync-back)
+├── README.md                    # User & AI Agent architecture documentation
+├── bin/                         # Installed to ~/.local/bin/
+│   ├── theme-switcher           # Rofi theme selector + multi-app / GTK / Papirus palette generator
+│   ├── wallpaper-switcher       # Rofi wallpaper selector (Pictures/Wallpapers + System)
+│   ├── switch-layout            # Synchronized multi-device keyboard layout switcher (US <-> IT) + SwayOSD
+│   ├── rofi-calc                # Inline Rofi calculator mode (qalc + Python math fallback + wl-copy)
+│   ├── screenshot               # grim + slurp + satty + wl-copy screenshot utility
+│   ├── clipboard-menu           # cliphist + rofi clipboard manager
+│   ├── power-menu               # rofi power menu (lock, suspend, logout, reboot, shutdown)
+│   └── keybinds-menu            # Searchable rofi keybinding cheat sheet
+└── config/                      # Installed to ~/.config/
     ├── hypr/
-    │   ├── hyprland.lua      # Main Hyprland 0.57+ native Lua configuration
-    │   ├── theme.lua         # Auto-generated border/accent colors from theme-switcher
-    │   ├── hyprpaper.conf    # Auto-generated wallpaper config from theme-switcher
-    │   ├── hyprlock.conf     # Clean lockscreen configuration
-    │   └── hypridle.conf     # Idle daemon (10m lock, 15m DPMS off)
+    │   ├── hyprland.lua         # Main Hyprland 0.57+ native Lua configuration
+    │   ├── theme.lua            # Auto-generated border/groupbar colors from theme-switcher
+    │   ├── hyprpaper.conf       # Auto-generated wallpaper config from theme-switcher
+    │   ├── hyprlock.conf        # Theme-aware lockscreen configuration (sources hyprlock-colors.conf)
+    │   ├── hyprlock-colors.conf # Auto-generated lockscreen palette from theme-switcher
+    │   └── hypridle.conf        # Idle daemon (10m lock, 15m DPMS off)
     ├── waybar/
-    │   ├── config.jsonc      # Floating pill top panel layout & module definitions
-    │   ├── style.css         # Floating pill panel styling with per-module semantic colors
-    │   └── colors.css        # Auto-generated palette variables (including @bg_bar, @bg_pill, @dark_text)
+    │   ├── config.jsonc         # Floating pill top panel, windowcount badge & interactive calendar
+    │   ├── style.css            # High-contrast pill styling with per-module semantic colors
+    │   └── colors.css           # Auto-generated palette variables (including @bg_bar, @bg_pill, @dark_text)
     ├── rofi/
-    │   ├── config.rasi       # Rofi modes (drun, run, window, calc), Papirus icons & vim keybinds
-    │   ├── theme.rasi        # Launcher layout & styling (imports colors.rasi)
-    │   └── colors.rasi       # Auto-generated palette variables
+    │   ├── config.rasi          # Rofi modes (drun, window, run, calc), bottom tab bar & Papirus icons
+    │   ├── theme.rasi           # Launcher & bottom mode-switcher styling (imports colors.rasi)
+    │   └── colors.rasi          # Auto-generated palette variables
     ├── kitty/
-    │   ├── kitty.conf        # Terminal font, padding, tab bar (includes colors.conf)
-    │   └── colors.conf       # Auto-generated 16-color terminal palette
+    │   ├── kitty.conf           # Terminal font, padding, tab bar (includes colors.conf)
+    │   └── colors.conf          # Auto-generated 16-color terminal palette
     ├── swaync/
-    │   ├── config.json       # Notification daemon & control center config
-    │   ├── style.css         # Notification styling (imports colors.css)
-    │   └── colors.css        # Auto-generated palette variables
+    │   ├── config.json          # Notification daemon & control center config
+    │   ├── style.css            # High-contrast notification & button styling (imports colors.css)
+    │   └── colors.css           # Auto-generated :root & @define-color palette variables
     ├── fontconfig/
-    │   └── fonts.conf        # Fontconfig tuned for 1.25x fractional scaling (hintnone, grayscale AA)
+    │   └── fonts.conf           # Fontconfig tuned for 1.25x fractional scaling (hintnone, grayscale AA)
     ├── themes/
-    │   └── current           # Stores active theme name
+    │   └── current              # Stores active theme name
     ├── uwsm/
-    │   └── env               # Wayland environment variables
-    └── mimeapps.list         # Default file manager (Nautilus) & browser associations
+    │   └── env                  # Wayland environment variables
+    └── mimeapps.list            # Default file manager (Nautilus) & browser associations
 ```
 
 ---
@@ -76,8 +78,9 @@ cd ~/src/vincepii/vince-hyper
 ```
 `./apply.sh` automatically:
 1. Checks if any required packages are missing and installs only the missing ones via `pacman`.
-2. Backs up your existing `~/.config` directories to `~/.cache/vince-hyper-backup-<timestamp>`.
-3. Deploys all configurations and scripts, generates the gradient wallpapers, and **preserves your currently active theme** (defaulting to **Tokyo Night** only on a brand-new installation).
+2. Configures `/etc/xdg/swayosd/backend.toml` (`ignore_caps_lock_key = true`, preserving other sections) and restarts `swayosd-libinput-backend.service` if active.
+3. Backs up your existing `~/.config` directories to `~/.cache/vince-hyper-backup-<timestamp>`.
+4. Deploys all configurations and scripts, generates the gradient wallpapers, and **preserves your currently active theme** (defaulting to **Tokyo Night** only on a brand-new installation).
 
 *(Note: Google Chrome is launched via `flatpak run com.google.Chrome` by default. If you use native Chrome or another browser, update `local browser` in `config/hypr/hyprland.lua`.)*
 
@@ -94,38 +97,43 @@ git diff
 
 | Shortcut | Action |
 | :--- | :--- |
-| **`Super` (tap & release)** | App Launcher (`rofi -show drun`) |
+| **`Super` (tap Left or Right)** | App Launcher (`rofi -show drun`, with bottom `Apps` / `Windows` / `Command` / `Calc` tabs) |
 | **`Super + D`** / **`Super + Space`** | App Launcher (`rofi -show drun`) |
 | **`Super + Tab`** / **`Alt + Tab`** | Window Switcher (`rofi -show window`) / Cycle next window |
-| **`Super + =`** | Inline Calculator (`rofi-calc` / `qalc`, auto-copies result to clipboard) |
+| **`Super + =`** | Inline Calculator (`rofi -show calc`, auto-copies result to clipboard) |
 | **`Super + .`** | Emoji Picker (`rofimoji` -> copies emoji to clipboard) |
+| **`Super + V`** | Clipboard History (`cliphist` + Rofi) |
 | **`Super + Return`** | Terminal (`kitty`) |
 | **`Super + B`** | Browser (`Google Chrome`) |
 | **`Super + E`** | File Manager (`nautilus`) |
 | **`Ctrl + Shift + Escape`** | Toggle Centered Floating System Monitor (`btop`) |
+| **`Super + Q`** / **`Super + Shift + Q`** / **`Super + C`** | Close Active Window |
+| **`Super + F`** / **`Super + M`** | Fullscreen (inhibits idle) / Maximize (keep Waybar + `󰊓` count badge) |
+| **`Super + Shift + Space`** | Toggle Floating / Tiling Window |
+| **`Super + P`** | Toggle Pseudo-Tile (Dwindle) |
+| **`Super + O`** *(or `Super + \`)* | Toggle Split Orientation (Dwindle Horizontal/Vertical) |
+| **`Super + W`** | Toggle Tabbed Window Group (`togglegroup`) |
+| **`Super + Shift + W`** | Move Active Window Out of Tabbed Group (`moveoutofgroup`) |
+| **`Super + Alt + H / L`** *(or `Alt + Left / Right`)* | Previous / Next Window Tab in Group |
 | **`Super + H / J / K / L`** *(or Arrows)* | Focus Left / Down / Up / Right (stops at screen edge) |
 | **`Super + Shift + H / J / K / L`** *(or Arrows)* | Move Window Left / Down / Up / Right |
-| **`Super + Ctrl + H / J / K / L`** *(or Arrows)* | Resize Window Left / Down / Up / Right |
-| **`Super + O`** *(or `Super + \`)* | Toggle Split Orientation (Dwindle Horizontal/Vertical) |
-| **`Super + F`** / **`Super + M`** | Fullscreen (inhibits idle) / Maximize (keep Waybar visible) |
-| **`Super + Shift + Space`** | Toggle Floating Window |
-| **`Super + Q`** *(or `Super + W`)* | Close Active Window |
+| **`Super + Ctrl + H / J / K / L`** *(or Arrows)* | Resize Window Left / Down / Up / Right (`40px` steps) |
 | **`Super + 1..0`** | Switch to Workspace 1–10 |
 | **`Super + Shift + 1..0`** | Move Active Window to Workspace 1–10 (and follow) |
-| **`Super + Ctrl + 1..0`** | Move Active Window Silently to Workspace 1–10 (stay on current workspace) |
-| **`Super + [`** / **`Super + ]`** | Cycle Previous / Next Workspace (`e-1` / `e+1`) |
-| **`Super + \`` (Grave)** / **`Super + Shift + \``** | Toggle Scratchpad / Move Window to Scratchpad |
+| **`Super + Ctrl + 1..0`** | Move Active Window Silently to Workspace 1–10 |
+| **`Super + [`** / **`Super + ]`** *(or `Super + Scroll`)* | Cycle Previous / Next Workspace (`e-1` / `e+1`) |
+| **`Super + -`** / **`Super + S`** | Toggle Scratchpad Special Workspace |
+| **`Super + Shift + -`** | Move Active Window to Scratchpad |
 | **`Super + Shift + S`** *(or `Print`)* | Screenshot Region -> Clipboard + `~/Pictures/Screenshots/` |
-| **`Super + S`** *(or `Super + Alt + S`)* | Screenshot Region + Edit/Annotate (`satty`) -> Clipboard + Save |
-| **`Super + Ctrl + S`** *(or `Shift + Print`)* | Screenshot Fullscreen -> Clipboard + Save |
-| **`Super + P`** *(or `Alt + Print`)* | Screenshot Active Window -> Clipboard + Save |
+| **`Super + Ctrl + S`** *(or `Shift + Print` / `Super + Print`)* | Screenshot Region -> Annotate/Edit (`satty`) -> Clipboard + Save |
+| **`Super + Alt + S`** *(or `Ctrl + Print`)* | Screenshot Fullscreen -> Clipboard + Save |
 | **`Super + Shift + C`** | Color Picker (`hyprpicker` -> Hex to Clipboard) |
-| **`Super + V`** *(or `Super + C`)* | Clipboard History (`cliphist` + Rofi) |
 | **`Super + Shift + T`** | Theme Selector (`theme-switcher`, 12 Dark & Light themes) |
-| **`Super + Shift + W`** | Wallpaper Selector (`wallpaper-switcher` / Right-click `󰔎` in bar) |
+| **`Super + Ctrl + W`** | Wallpaper Selector (`wallpaper-switcher` / Right-click `󰔎` in bar) |
 | **`Super + N`** | Toggle Notification Center (`swaync`) |
-| **`Super + Escape`** *(or `Super + X`)* | Power Menu (Lock, Suspend, Logout, Reboot, Shutdown) |
-| **`Ctrl + Alt + L`** | Lock Screen Immediately (`hyprlock`) |
+| **`Ctrl + Alt + L`** / **`Super + Escape`** | Lock Screen Immediately (`hyprlock`) |
+| **`Super + Shift + E`** | Power / Logout Menu (Lock, Suspend, Logout, Reboot, Shutdown) |
+| **`Super + Shift + B`** / **`Super + Shift + R`** | Restart Waybar / Reload Hyprland + Waybar |
 | **`Super + /`** *(or `Super + ?`)* | Open Searchable Keybind Cheat Sheet |
 | **`CapsLock`** / **`Super + Ctrl + Space`** | Switch Keyboard Layout (`US` <-> `IT`) across all devices + SwayOSD |
 
@@ -138,27 +146,20 @@ When assisting the user with modifications to this desktop setup, follow these a
 1. **Hyprland `0.55+` / `0.57+` Uses Native Lua (`hyprland.lua`)**:
    - CachyOS's Hyprland package (`0.57+`) evaluates `~/.config/hypr/hyprland.lua` using the `hl.*` Lua API (type stubs are located at `/usr/share/hypr/stubs/hl.meta.lua`).
    - Do **not** create legacy `hyprland.conf` files unless specifically requested; edit `config/hypr/hyprland.lua`.
-   - You can validate `hyprland.lua` at any time using `Hyprland --verify-config -c config/hypr/hyprland.lua`.
-   - Common API patterns:
-     - Config options: `hl.config({ general = { ... }, decoration = { ... }, input = { ... }, debug = { vfr = true }, render = { direct_scanout = 1 } })`
-     - Keybindings: `hl.bind("SUPER + H", hl.dsp.focus({ direction = "l" }), { description = "..." })`
-     - Release keybinds (`bindr` equivalent): `hl.bind("SUPER + SUPER_L", hl.dsp.exec_cmd("..."), { release = true })`
-     - Repeating/locked keybinds: `{ repeating = true, locked = true }`
-     - Window rules: `hl.window_rule({ match = { class = "^(...)$" }, float = true })`
-     - Workspace rules: `hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })`
+   - Note that external CLI calls via `hyprctl dispatch ...` (e.g., in Waybar `on-click` / `on-scroll-*` handlers) must still use standard CLI dispatcher syntax (`hyprctl dispatch workspace e+1`, `hyprctl dispatch fullscreen 1`), **not** `hl.dsp.*` Lua syntax.
+   - Validate `hyprland.lua` at any time using `Hyprland --verify-config -c config/hypr/hyprland.lua`.
 2. **Theme System Architecture (`bin/theme-switcher`)**:
-   - Never hardcode hex colors inside `config/waybar/style.css`, `config/rofi/theme.rasi`, `config/kitty/kitty.conf`, or `config/swaync/style.css`.
-   - Instead, use the color variables generated by `bin/theme-switcher`:
-     - Waybar & SwayNC (`@bg`, `@bg_alt`, `@bg_bar`, `@bg_pill`, `@surface`, `@fg`, `@fg_dim`, `@accent`, `@accent2`, `@urgent`, `@green`, `@yellow`, `@cyan`, `@orange`, `@pink`, `@teal`, `@dark_text`).
-     - Rofi (`@bg`, `@bg-alt`, `@surface`, `@fg`, `@fg-dim`, `@accent`, `@accent2`, `@urgent`).
-     - Hyprland (`theme.active_border`, `theme.inactive_border` loaded via `require("theme")`).
-   - `bin/theme-switcher` also syncs GTK 3/4 `settings.ini`, `gsettings` (`Adwaita-dark` vs `Adwaita`, `Papirus-Dark` vs `Papirus-Light`, font rendering), and Rofi's `icon-theme`. Use `theme-switcher --restore` at startup to restore settings quietly without sending a desktop notification.
-   - To add a new theme, add a case block in `bin/theme-switcher`, add its RGB tuple to `apply.sh` (`generate_wallpapers`), and run `theme-switcher "<Theme Name>"`.
+   - Never hardcode hex colors inside `config/waybar/style.css`, `config/rofi/theme.rasi`, `config/kitty/kitty.conf`, `config/swaync/style.css`, or `config/hypr/hyprlock.conf`.
+   - `bin/theme-switcher` generates:
+     - `~/.config/hypr/theme.lua` (borders + `group` / `groupbar` colors)
+     - `~/.config/hypr/hyprlock-colors.conf` (sourced by `hyprlock.conf`)
+     - `~/.config/waybar/colors.css` + Pango hex colors in `~/.config/waybar/config.jsonc` (`clock` calendar & `custom/notification` dot)
+     - `~/.config/rofi/colors.rasi` + `icon-theme` in `config.rasi`
+     - `~/.config/kitty/colors.conf`
+     - `~/.config/swaync/colors.css` (`:root` variables + `@define-color` fallbacks)
+     - `~/.config/gtk-3.0/settings.ini`, `~/.config/gtk-4.0/settings.ini`, and `gsettings`.
 3. **Keyboard Layout Switching (`bin/switch-layout`)**:
-   - Do **not** use `kb_options = "grp:caps_toggle"` or `hyprctl switchxkblayout all next`—on multi-interface keyboards they desynchronize the physical keyboard from Waybar's `hyprland/language` module.
-   - Instead, `kb_options` is set to `"caps:none"` and `code:66` (`CapsLock`), `Super + Ctrl + Space`, and Waybar's language pill all invoke `~/.local/bin/switch-layout`, which queries the main keyboard's `active_layout_index` and forces all keyboard devices onto explicit index `0` (`US`) or `1` (`IT`).
-4. **Syncing Workflow**:
-   - Always keep `~/src/vincepii/vince-hyper` and the live `~/.config` / `~/.local/bin` in sync!
-   - Either edit files inside `~/src/vincepii/vince-hyper` and run `./apply.sh`, or edit live files in `~/.config` and run `./apply.sh --sync-back`.
-5. **Privacy / Public Repo Safety**:
-   - Never commit hardcoded usernames, hostnames, MAC addresses, Wi-Fi SSIDs, or tokens. Use `$HOME` or `~` in scripts and configs.
+   - Keep `kb_options = "caps:none"` and route `code:66` (`CapsLock`), `Super + Ctrl + Space`, and Waybar's language pill through `~/.local/bin/switch-layout` so multi-interface keyboards never desync.
+4. **Syncing & Privacy**:
+   - Keep `~/src/vincepii/vince-hyper` and live `~/.config` / `~/.local/bin` in sync via `./apply.sh` or `./apply.sh --sync-back`.
+   - Never commit hardcoded usernames, hostnames, MAC addresses, Wi-Fi SSIDs, or secrets.
