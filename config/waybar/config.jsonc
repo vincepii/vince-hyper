@@ -50,8 +50,9 @@
     }
   },
   "hyprland/windowcount": {
-    "format-empty": "",
-    "format-windowed": "",
+    "format": "<span/>",
+    "format-empty": "<span/>",
+    "format-windowed": "<span/>",
     "format-fullscreen": "󰊓 {}",
     "separate-outputs": true,
     "tooltip-format": "Maximized Window (Super+M)\nLeft-click: Unmaximize\nRight-click: Switch Hidden Windows (Super+Tab)",

@@ -6,6 +6,15 @@ A clean aesthetic with a high-contrast floating pill-based Waybar, a multi-tab R
 
 ---
 
+## Screenshots
+
+| Dark Mode (Tokyo Night) | Light Mode (Tokyo Night Day) |
+| :---: | :---: |
+| [![Dark Theme Switcher](assets/dark-launcher.webp)](assets/dark-launcher.webp)<br><sub>**12-Palette Theme Switcher** (`Super + Shift + T`)</sub> | [![Light App Launcher](assets/light-launcher.webp)](assets/light-launcher.webp)<br><sub>**Multi-Tab Rofi Launcher** (`Apps` · `Windows` · `Command` · `Calc`)</sub> |
+| [![Dark Tiled Workspace](assets/dark-workspace.webp)](assets/dark-workspace.webp)<br><sub>**Dwindle Tiling + Searchable Keybind Cheat Sheet** (`Super + /`)</sub> | [![Light Tiled Workspace](assets/light-workspace.webp)](assets/light-workspace.webp)<br><sub>**Light GTK / Papirus Sync + Wallpaper Switcher** (`Super + Ctrl + W`)</sub> |
+
+---
+
 ## Philosophy & Design Goals
 
 1. **Zero Bloat / No Gimmicks**: No custom Quickshell/AGS/Astal daemons, no audio visualizer bars, no docks, no anime wallpapers. Just a crisp floating pill top panel and fast keyboard-driven workflows.
@@ -25,6 +34,7 @@ A clean aesthetic with a high-contrast floating pill-based Waybar, a multi-tab R
 vince-hyper/
 ├── apply.sh                     # Bootstrap & sync script (apply / upgrade, --sync-back)
 ├── README.md                    # User & AI Agent architecture documentation
+├── assets/                      # Optimized desktop preview screenshots
 ├── bin/                         # Installed to ~/.local/bin/
 │   ├── theme-switcher           # Rofi theme selector + multi-app / GTK / Papirus palette generator
 │   ├── wallpaper-switcher       # Rofi wallpaper selector (Pictures/Wallpapers + System)

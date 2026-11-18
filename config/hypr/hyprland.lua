@@ -148,16 +148,16 @@ hl.config({
 
         shadow = {
             enabled      = true,
-            range        = 16,
-            render_power = 3,
-            color        = "rgba(00000066)",
+            range        = 8,
+            render_power = 2,
+            color        = "rgba(00000055)",
         },
 
         blur = {
             enabled           = true,
-            size              = 4,
-            passes            = 2,
-            xray              = false,
+            size              = 5,
+            passes            = 1,
+            xray              = true,
             new_optimizations = true,
             vibrancy          = 0.1696,
         },
@@ -183,7 +183,7 @@ hl.config({
         disable_splash_rendering = true,
         middle_click_paste       = false,
         focus_on_activate        = true,
-        vrr                      = 1,
+        vrr                      = 2, -- Fullscreen only (prevents GPU compute loads from throttling desktop/cursor Hz)
     },
 
     -- Variable Frame Rate (VFR): in Hyprland 0.57+ Lua config, vfr is under debug.vfr
@@ -499,9 +499,8 @@ hl.layer_rule({
     no_anim      = true,
 })
 
--- Frosted-glass compositor blur behind translucent Waybar, SwayNC, and SwayOSD surfaces
+-- Frosted-glass compositor blur on on-demand overlays (skip Waybar since it ticks every 1s at 90% opacity)
 local blurLayers = {
-    "^(waybar)$",
     "^(swaync-control-center)$",
     "^(swaync-notification-window)$",
     "^(swayosd)$",
