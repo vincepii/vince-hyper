@@ -39,6 +39,7 @@ vince-hyper/
 │   ├── theme-switcher           # Rofi theme selector + multi-app / GTK / Papirus palette generator
 │   ├── wallpaper-switcher       # Rofi wallpaper selector (Pictures/Wallpapers + System)
 │   ├── switch-layout            # Synchronized multi-device keyboard layout switcher (US <-> IT) + SwayOSD
+│   ├── lock-countdown           # 30s pre-lock SwayOSD countdown helper for hypridle
 │   ├── rofi-calc                # Inline Rofi calculator mode (qalc + Python math fallback + wl-copy)
 │   ├── screenshot               # grim + slurp + satty + wl-copy screenshot utility
 │   ├── clipboard-menu           # cliphist + rofi clipboard manager
@@ -51,7 +52,7 @@ vince-hyper/
     │   ├── hyprpaper.conf       # Auto-generated wallpaper config from theme-switcher
     │   ├── hyprlock.conf        # Theme-aware lockscreen configuration (sources hyprlock-colors.conf)
     │   ├── hyprlock-colors.conf # Auto-generated lockscreen palette from theme-switcher
-    │   └── hypridle.conf        # Idle daemon (10m lock, 15m DPMS off)
+    │   └── hypridle.conf        # Idle daemon (4.5m OSD countdown, 5m lock, 10m DPMS off)
     ├── waybar/
     │   ├── config.jsonc         # Floating pill top panel, windowcount badge & interactive calendar
     │   ├── style.css            # High-contrast pill styling with per-module semantic colors

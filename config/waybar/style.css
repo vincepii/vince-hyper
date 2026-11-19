@@ -164,7 +164,8 @@ window#waybar.empty #windowcount {
 }
 
 /* Uniform right-side module pills */
-#mpris,
+#mpris.playing,
+#mpris.paused,
 #tray,
 #idle_inhibitor,
 #language,
@@ -188,7 +189,8 @@ window#waybar.empty #windowcount {
 }
 
 #tray:hover,
-#mpris:hover,
+#mpris.playing:hover,
+#mpris.paused:hover,
 #idle_inhibitor:hover,
 #language:hover,
 #custom-clipboard:hover,
@@ -206,6 +208,24 @@ window#waybar.empty #windowcount {
 
 /* Semantic per-module colors */
 #mpris {
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  min-height: 0;
+  font-size: 0;
+  border: none;
+  background: transparent;
+  color: transparent;
+  opacity: 0;
+}
+
+#mpris.playing,
+#mpris.paused {
+  font-size: 13px;
+  opacity: 1;
+}
+
+#mpris.playing {
   color: @green;
 }
 

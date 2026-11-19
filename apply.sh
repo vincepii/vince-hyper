@@ -126,6 +126,7 @@ PYEOF
     cp -a "$HOME/.local/bin/theme-switcher" \
           "$HOME/.local/bin/wallpaper-switcher" \
           "$HOME/.local/bin/switch-layout" \
+          "$HOME/.local/bin/lock-countdown" \
           "$HOME/.local/bin/rofi-calc" \
           "$HOME/.local/bin/screenshot" \
           "$HOME/.local/bin/clipboard-menu" \
@@ -293,6 +294,7 @@ cp -a "$REPO_DIR/bin/"* "$HOME/.local/bin/"
 chmod +x "$HOME/.local/bin/theme-switcher" \
          "$HOME/.local/bin/wallpaper-switcher" \
          "$HOME/.local/bin/switch-layout" \
+         "$HOME/.local/bin/lock-countdown" \
          "$HOME/.local/bin/rofi-calc" \
          "$HOME/.local/bin/screenshot" \
          "$HOME/.local/bin/clipboard-menu" \

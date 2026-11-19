@@ -1,0 +1,165 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# 30-Second Pre-Lock SwayOSD Countdown Helper for hypridle
+# ==============================================================================
+# Usage:
+#   lock-countdown start   # Spawn detached 30..1s SwayOSD countdown worker
+#   lock-countdown stop    # Silently stop active countdown worker
+#   lock-countdown cancel  # Stop active worker and toast "Screen lock cancelled"
+# ==============================================================================
+
+set -euo pipefail
+
+exec python3 - "$0" "$@" << 'PYEOF'
+import errno
+import os
+import shutil
+import signal
+import subprocess
+import sys
+import threading
+import time
+
+SCRIPT_PATH = os.path.abspath(sys.argv[1])
+CMD = sys.argv[2] if len(sys.argv) > 2 else ""
+
+RUNTIME_DIR = os.environ.get("XDG_RUNTIME_DIR") or f"/tmp/hypr-{os.getuid()}"
+os.makedirs(RUNTIME_DIR, exist_ok=True)
+PID_FILE = os.path.join(RUNTIME_DIR, "lock-countdown.pid")
+
+
+def send_osd(message: str) -> None:
+    if not shutil.which("swayosd-client"):
+        return
+    try:
+        subprocess.Popen(
+            [
+                "swayosd-client",
+                "--custom-icon",
+                "system-lock-screen-symbolic",
+                "--custom-message",
+                message,
+            ],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+    except OSError:
+        pass
+
+
+def is_countdown_worker(pid: int) -> bool:
+    if pid <= 1:
+        return False
+    try:
+        with open(f"/proc/{pid}/cmdline", "rb") as f:
+            raw = f.read()
+        parts = [p.decode("utf-8", errors="replace") for p in raw.split(b"\x00") if p]
+        return "_worker" in parts and any("lock-countdown" in p for p in parts)
+    except OSError:
+        return False
+
+
+def write_pid_atomic(pid: int) -> None:
+    tmp_path = f"{PID_FILE}.{os.getpid()}.tmp"
+    with open(tmp_path, "w", encoding="utf-8") as f:
+        f.write(f"{pid}\n")
+    os.replace(tmp_path, PID_FILE)
+
+
+def remove_pid_if_value(expected_pid: int) -> None:
+    try:
+        with open(PID_FILE, "r", encoding="utf-8") as f:
+            current = int(f.read().strip())
+        if current == expected_pid:
+            os.unlink(PID_FILE)
+    except (OSError, ValueError):
+        pass
+
+
+def terminate_existing() -> bool:
+    try:
+        with open(PID_FILE, "r", encoding="utf-8") as f:
+            pid = int(f.read().strip())
+    except (OSError, ValueError):
+        try:
+            os.unlink(PID_FILE)
+        except OSError:
+            pass
+        return False
+
+    was_active = False
+    if is_countdown_worker(pid):
+        try:
+            os.kill(pid, signal.SIGTERM)
+            was_active = True
+        except OSError as e:
+            if e.errno != errno.ESRCH:
+                pass
+        if was_active:
+            deadline = time.monotonic() + 0.3
+            while time.monotonic() < deadline and is_countdown_worker(pid):
+                time.sleep(0.01)
+
+    remove_pid_if_value(pid)
+    return was_active
+
+
+def run_worker() -> int:
+    stop_event = threading.Event()
+
+    def handle_sig(_signum, _frame):
+        stop_event.set()
+
+    signal.signal(signal.SIGTERM, handle_sig)
+    signal.signal(signal.SIGINT, handle_sig)
+
+    my_pid = os.getpid()
+    try:
+        t0 = time.monotonic()
+        for idx, remaining in enumerate(range(30, 0, -1)):
+            if stop_event.is_set():
+                break
+            send_osd(f"Locking screen in {remaining} second(s)")
+            next_tick = t0 + (idx + 1)
+            wait_secs = max(0.0, next_tick - time.monotonic())
+            if stop_event.wait(wait_secs):
+                break
+    finally:
+        remove_pid_if_value(my_pid)
+    return 0
+
+
+def main() -> int:
+    if CMD == "_worker":
+        return run_worker()
+
+    if CMD == "start":
+        terminate_existing()
+        proc = subprocess.Popen(
+            [SCRIPT_PATH, "_worker"],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+        write_pid_atomic(proc.pid)
+        return 0
+
+    if CMD == "stop":
+        terminate_existing()
+        return 0
+
+    if CMD == "cancel":
+        if terminate_existing():
+            send_osd("Screen lock cancelled")
+        return 0
+
+    sys.stderr.write("Usage: lock-countdown {start|stop|cancel}\n")
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+PYEOF
