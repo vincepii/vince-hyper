@@ -210,8 +210,8 @@ hl.config({
     },
 })
 
--- Persistent workspaces 1..5 (portable across any monitor connector: DP-1, eDP-1, HDMI-A-1)
-for i = 1, 5 do
+-- Persistent workspaces 1..4 (portable across any monitor connector: DP-1, eDP-1, HDMI-A-1)
+for i = 1, 4 do
     hl.workspace_rule({ workspace = tostring(i), persistent = true })
 end
 
