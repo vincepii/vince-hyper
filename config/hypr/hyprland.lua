@@ -405,11 +405,11 @@ hl.window_rule({
     no_focus = true,
 })
 
--- Fullscreen apps (videos, games) automatically inhibit hypridle
+-- True fullscreen apps (Super+F = state 2; excludes Super+M maximize = state 1) inhibit hypridle when visible
 hl.window_rule({
     name         = "fullscreen-idle-inhibit",
-    match        = { fullscreen = true },
-    idle_inhibit = "always",
+    match        = { fullscreen_state_internal = 2 },
+    idle_inhibit = "fullscreen",
 })
 
 -- Tiled browser video calls (Google Meet, Zoom, Microsoft Teams, Webex, Jitsi) inhibit idle when focused

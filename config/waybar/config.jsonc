@@ -103,12 +103,15 @@
     }
   },
   "mpris": {
+    "interval": 1,
     "format": "{player_icon} {dynamic}",
     "format-paused": "{status_icon} <i>{dynamic}</i>",
     "max-length": 36,
     "dynamic-order": [
       "title",
-      "artist"
+      "artist",
+      "position",
+      "length"
     ],
     "player-icons": {
       "default": "󰎆",
